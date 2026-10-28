@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Building2, Check, RefreshCw, Upload, X } from 'lucide-react';
 import { storageService } from '../services/storage';
 import { SchoolProfile } from '../types/procurement';
@@ -15,9 +15,15 @@ export const SchoolSettingsModal: React.FC<SchoolSettingsModalProps> = ({
   onClose,
   onSaved,
 }) => {
-  if (!isOpen) return null;
-
   const [profile, setProfile] = useState<SchoolProfile>(() => storageService.getSchoolProfile());
+
+  useEffect(() => {
+    if (isOpen) {
+      setProfile(storageService.getSchoolProfile());
+    }
+  }, [isOpen]);
+
+  if (!isOpen) return null;
 
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

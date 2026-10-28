@@ -1,9 +1,9 @@
 import { DEFAULT_SCHOOL_PROFILE, INITIAL_TRANSACTIONS } from '../data/defaultData';
 import { SchoolProfile, TransactionDocument } from '../types/procurement';
 
-const TX_KEY = 'sp_app_transactions_v1';
-const PROFILE_KEY = 'sp_app_school_profile_v1';
-const SEARCH_HISTORY_KEY = 'sp_app_search_history_v1';
+const TX_KEY = 'sp_app_transactions_v2';
+const PROFILE_KEY = 'sp_app_school_profile_v2';
+const SEARCH_HISTORY_KEY = 'sp_app_search_history_v2';
 
 export const storageService = {
   getTransactions(): TransactionDocument[] {

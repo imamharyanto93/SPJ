@@ -18,9 +18,11 @@ export const KopSurat: React.FC<KopSuratProps> = ({ school }) => {
 
         {/* Teks Kop Surat Resmi Dinas / Sekolah */}
         <div className="flex-1 text-center font-sans tracking-wide">
-          <h2 className="text-[14px] font-bold uppercase text-black leading-snug">
-            {school.namaInstansiAtas || 'PEMERINTAH KABUPATEN SERANG'}
-          </h2>
+          {school.namaInstansiAtas && (
+            <h2 className="text-[14px] font-bold uppercase text-black leading-snug">
+              {school.namaInstansiAtas}
+            </h2>
+          )}
           {school.namaDinas && (
             <h3 className="text-[13px] font-bold uppercase text-black leading-snug">
               {school.namaDinas}

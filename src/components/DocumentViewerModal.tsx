@@ -158,9 +158,14 @@ export const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({
           <button
             onClick={handlePrint}
             className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#4480A6] hover:bg-[#376d8f] text-white text-xs font-bold rounded-lg shadow-sm border border-[#92D2F9]/50 transition-colors"
+            title={`Cetak ${activeDoc === 'all' ? 'Bundel 4 Dokumen Lengkap' : docTabs.find((d) => d.id === activeDoc)?.label || 'Dokumen'} (A4)`}
           >
             <Printer className="w-3.5 h-3.5 text-[#92D2F9]" />
-            <span>Cetak (A4)</span>
+            <span>
+              {activeDoc === 'all'
+                ? 'Cetak Bundel (4 Dokumen)'
+                : `Cetak ${docTabs.find((d) => d.id === activeDoc)?.short || 'Dokumen'}`}
+            </span>
           </button>
 
           {/* Close button */}

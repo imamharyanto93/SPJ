@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   AlertCircle,
   Building2,
@@ -24,81 +24,87 @@ interface TransactionEditorModalProps {
   onSave: (tx: TransactionDocument) => void;
 }
 
+const createInitialFormData = (initialData?: TransactionDocument | null): TransactionDocument => {
+  if (initialData) return JSON.parse(JSON.stringify(initialData));
+
+  const defaultSchool = storageService.getSchoolProfile();
+  const todayStr = new Date().toISOString().split('T')[0];
+  const slashDate = `${todayStr.slice(8, 10)}/${todayStr.slice(5, 7)}/${todayStr.slice(0, 4)}`;
+
+  return {
+    id: 'tx-' + Date.now(),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    nomorPesanan: `044/SD.24/SP/II/${new Date().getFullYear()}`,
+    nomorBAST: `045/SD.24/SP/II/${new Date().getFullYear()}`,
+    nomorSPMU: `900.1.3.6 / 09 / SDN. 24 / ${new Date().getFullYear()}`,
+    nomorPerencanaan: `043/SD.24/DOK-REN/II/${new Date().getFullYear()}`,
+    tanggalPesanan: todayStr,
+    tanggalNegosiasi: todayStr,
+    waktuPengerjaan: slashDate,
+    waktuPemrosesan: slashDate,
+    waktuPenyelesaian: slashDate,
+    tanggalBAST: todayStr,
+    tanggalSPMU: todayStr,
+    paketPesanan: 'Kegiatan Jual Beli Melalui Toko',
+    kategoriBarangJasa: '',
+    alokasiAnggaran: 'BOS Reguler 2026',
+    lokasiSerahTerima: defaultSchool.namaSekolah,
+    persyaratanPenyedia:
+      'Perorangan/Badan Usaha Memenuhi syarat sebagai berikut :\na. Identitas Penyedia\nb. NPWP',
+    keperluanSPMU: '',
+    tujuanBendaharaSpmu: defaultSchool.namaBendahara || 'Bendahara BOSP',
+    tahunAnggaran: String(new Date().getFullYear()),
+    items: [
+      {
+        id: 'item-' + Date.now(),
+        uraian: '',
+        qty: 1,
+        satuan: 'Paket',
+        hargaSatuan: 0,
+        jumlahHarga: 0,
+        kondisi: 'Baik',
+      },
+    ],
+    totalSebelumPpn: 0,
+    dppPpn: 0,
+    ppnRate: 0,
+    ppnNominal: 0,
+    pphRate: 0,
+    pphNominal: 0,
+    totalPembayaran: 0,
+    terbilangCustom: '',
+    vendor: {
+      namaToko: '',
+      namaPemilik: '',
+      jabatan: 'Pemilik Toko',
+      alamat: '',
+      telepon: '',
+      npwp: 'Ada',
+    },
+    school: { ...defaultSchool },
+    status: 'Selesai',
+    catatan: '',
+  };
+};
+
 export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
   initialData,
   isOpen,
   onClose,
   onSave,
 }) => {
-  if (!isOpen) return null;
-
-  const defaultSchool = storageService.getSchoolProfile();
-
-  // Initial state setup
-  const [formData, setFormData] = useState<TransactionDocument>(() => {
-    if (initialData) return JSON.parse(JSON.stringify(initialData));
-
-    const todayStr = new Date().toISOString().split('T')[0];
-    const slashDate = `${todayStr.slice(8, 10)}/${todayStr.slice(5, 7)}/${todayStr.slice(0, 4)}`;
-
-    return {
-      id: 'tx-' + Date.now(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      nomorPesanan: `044/SD.24/SP/II/${new Date().getFullYear()}`,
-      nomorBAST: `045/SD.24/SP/II/${new Date().getFullYear()}`,
-      nomorSPMU: `900.1.3.6 / 09 / SDN. 24 / ${new Date().getFullYear()}`,
-      nomorPerencanaan: `043/SD.24/DOK-REN/II/${new Date().getFullYear()}`,
-      tanggalPesanan: todayStr,
-      tanggalNegosiasi: todayStr,
-      waktuPengerjaan: slashDate,
-      waktuPemrosesan: slashDate,
-      waktuPenyelesaian: slashDate,
-      tanggalBAST: todayStr,
-      tanggalSPMU: todayStr,
-      paketPesanan: 'Kegiatan Jual Beli Melalui Toko',
-      kategoriBarangJasa: '',
-      alokasiAnggaran: 'BOS Reguler 2026',
-      lokasiSerahTerima: defaultSchool.namaSekolah,
-      persyaratanPenyedia:
-        'Perorangan/Badan Usaha Memenuhi syarat sebagai berikut :\na. Identitas Penyedia\nb. NPWP',
-      keperluanSPMU: '',
-      tujuanBendaharaSpmu: defaultSchool.namaBendahara || 'Bendahara BOSP',
-      tahunAnggaran: String(new Date().getFullYear()),
-      items: [
-        {
-          id: 'item-' + Date.now(),
-          uraian: '',
-          qty: 1,
-          satuan: 'Paket',
-          hargaSatuan: 0,
-          jumlahHarga: 0,
-          kondisi: 'Baik',
-        },
-      ],
-      totalSebelumPpn: 0,
-      dppPpn: 0,
-      ppnRate: 0,
-      ppnNominal: 0,
-      pphRate: 0,
-      pphNominal: 0,
-      totalPembayaran: 0,
-      terbilangCustom: '',
-      vendor: {
-        namaToko: '',
-        namaPemilik: '',
-        jabatan: 'Pemilik Toko',
-        alamat: '',
-        telepon: '',
-        npwp: 'Ada',
-      },
-      school: { ...defaultSchool },
-      status: 'Selesai',
-      catatan: '',
-    };
-  });
-
+  const [formData, setFormData] = useState<TransactionDocument>(() => createInitialFormData(initialData));
   const [activeTab, setActiveTab] = useState<'info' | 'vendor' | 'items' | 'officers'>('info');
+
+  useEffect(() => {
+    if (isOpen) {
+      setFormData(createInitialFormData(initialData));
+      setActiveTab('info');
+    }
+  }, [isOpen, initialData]);
+
+  if (!isOpen) return null;
 
   // Recalculate totals helper
   const updateCalculations = (

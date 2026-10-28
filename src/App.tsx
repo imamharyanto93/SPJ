@@ -419,7 +419,7 @@ export default function App() {
               className="flex items-center gap-1.5 hover:text-amber-600 transition-colors"
             >
               <RefreshCw className="w-3.5 h-3.5" />
-              <span>Reset Data Contoh</span>
+              <span>Kosongkan / Reset Data</span>
             </button>
           </div>
           <div className="text-[11px] text-slate-400">
@@ -427,6 +427,24 @@ export default function App() {
           </div>
         </div>
       </main>
+
+      {/* Footer Aplikasi */}
+      <footer className="no-print bg-white border-t border-slate-200 py-5 text-xs text-slate-600 mt-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+          <div>
+            <p className="font-bold text-[#085070] text-sm tracking-tight">
+              Aplikasi Dikembangkan oleh Imam Haryanto, S.E.
+            </p>
+            <p className="text-[11px] text-slate-400 mt-0.5">
+              Sistem Administrasi Dokumen Pengadaan Barang & Jasa Satuan Pendidikan
+            </p>
+          </div>
+          <div className="flex items-center gap-2 text-[11px] text-slate-400">
+            <span className="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>Surat Pesanan • Dok. Perencanaan • BAST • SPMU</span>
+          </div>
+        </div>
+      </footer>
 
       {/* Delete Confirmation Modal */}
       {deleteTarget && (
