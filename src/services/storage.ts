@@ -1,19 +1,38 @@
 import { DEFAULT_SCHOOL_PROFILE, INITIAL_TRANSACTIONS } from '../data/defaultData';
 import { SchoolProfile, TransactionDocument } from '../types/procurement';
 
-const TX_KEY = 'sp_app_transactions_v2';
-const PROFILE_KEY = 'sp_app_school_profile_v2';
-const SEARCH_HISTORY_KEY = 'sp_app_search_history_v2';
+const TX_KEY = 'sp_app_transactions_v3';
+const PROFILE_KEY = 'sp_app_school_profile_v3';
+const SEARCH_HISTORY_KEY = 'sp_app_search_history_v3';
 
 export const storageService = {
   getTransactions(): TransactionDocument[] {
     try {
       const data = localStorage.getItem(TX_KEY);
       if (!data) {
+        // If previous v2 has transactions, check them
+        const old = localStorage.getItem('sp_app_transactions_v2');
+        if (old) {
+          try {
+            const parsed = JSON.parse(old);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              localStorage.setItem(TX_KEY, old);
+              return parsed;
+            }
+          } catch {
+            // ignore
+          }
+        }
         localStorage.setItem(TX_KEY, JSON.stringify(INITIAL_TRANSACTIONS));
         return INITIAL_TRANSACTIONS;
       }
-      return JSON.parse(data);
+      const parsed = JSON.parse(data);
+      if (Array.isArray(parsed) && parsed.length === 0) {
+        // If empty from previous turn, populate with initial transactions
+        localStorage.setItem(TX_KEY, JSON.stringify(INITIAL_TRANSACTIONS));
+        return INITIAL_TRANSACTIONS;
+      }
+      return parsed;
     } catch (e) {
       console.error('Failed reading transactions from storage', e);
       return INITIAL_TRANSACTIONS;
@@ -53,10 +72,29 @@ export const storageService = {
     try {
       const data = localStorage.getItem(PROFILE_KEY);
       if (!data) {
+        // Check if old v2 has custom user data (not empty)
+        const old = localStorage.getItem('sp_app_school_profile_v2');
+        if (old) {
+          try {
+            const parsed = JSON.parse(old);
+            if (parsed.namaSekolah && parsed.namaSekolah.trim() !== '') {
+              localStorage.setItem(PROFILE_KEY, old);
+              return parsed;
+            }
+          } catch {
+            // ignore
+          }
+        }
         localStorage.setItem(PROFILE_KEY, JSON.stringify(DEFAULT_SCHOOL_PROFILE));
         return DEFAULT_SCHOOL_PROFILE;
       }
-      return JSON.parse(data);
+      const parsed = JSON.parse(data);
+      // If parsed profile has empty namaSekolah, fallback to restored DEFAULT_SCHOOL_PROFILE
+      if (!parsed.namaSekolah || parsed.namaSekolah.trim() === '') {
+        localStorage.setItem(PROFILE_KEY, JSON.stringify(DEFAULT_SCHOOL_PROFILE));
+        return DEFAULT_SCHOOL_PROFILE;
+      }
+      return parsed;
     } catch (e) {
       return DEFAULT_SCHOOL_PROFILE;
     }
