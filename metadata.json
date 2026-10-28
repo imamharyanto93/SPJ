@@ -1,0 +1,8 @@
+{
+  "name": "Aplikasi SP, Perencanaan, BAST & SPMU Sekolah",
+  "description": "Aplikasi terintegrasi pembuatan Surat Pesanan, Dokumen Perencanaan, BAST, dan SPMU untuk pengadaan sekolah dengan cetak PDF dan riwayat pencarian dokumen.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
