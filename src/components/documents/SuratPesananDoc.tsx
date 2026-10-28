@@ -201,8 +201,10 @@ export const SuratPesananDoc: React.FC<SuratPesananDocProps> = ({ tx }) => {
         <div className="text-left pl-2">
           <div>Penyedia</div>
           <div className="h-16"></div>
-          <div className="tracking-widest">....................................</div>
-          <div className="mt-1 font-medium">Toko: {tx.vendor.namaToko}</div>
+          <div className="font-bold underline text-[11px]">
+            {tx.vendor.namaPemilik || '....................................'}
+          </div>
+          <div className="mt-0.5 font-medium">Toko: {tx.vendor.namaToko}</div>
         </div>
 
         {/* Pihak Pelaksana */}

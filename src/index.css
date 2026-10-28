@@ -1,5 +1,17 @@
 @import "tailwindcss";
 
+@theme {
+  --color-brand-deep: #085070;
+  --color-brand-deep-hover: #063d56;
+  --color-brand-steel: #4480a6;
+  --color-brand-steel-hover: #376d8f;
+  --color-brand-sky: #92d2f9;
+  --color-brand-sky-light: #ebf6fe;
+  --color-brand-cream: #fde8b5;
+  --color-brand-cream-light: #fff8e7;
+  --color-brand-cream-dark: #8c6a1d;
+}
+
 @layer base {
   /* Document view typography styling for authentic official look */
   .doc-font {

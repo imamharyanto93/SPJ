@@ -85,8 +85,8 @@ export const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-900/75 backdrop-blur-xs flex flex-col justify-between overflow-hidden animate-in fade-in duration-150">
-      {/* Top Navbar Toolbar */}
-      <div className="no-print bg-slate-900 text-white px-4 py-3 flex flex-wrap items-center justify-between border-b border-slate-800 gap-3">
+      {/* Top Navbar Toolbar matching swatch: Deep Ocean Teal #085070 */}
+      <div className="no-print bg-[#085070] text-white px-4 py-3 flex flex-wrap items-center justify-between border-b border-[#063D56] gap-3">
         {/* Document Switcher Tabs */}
         <div className="flex items-center gap-1.5 overflow-x-auto py-1">
           {docTabs.map((tab) => (
@@ -95,8 +95,8 @@ export const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({
               onClick={() => setActiveDoc(tab.id)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
                 activeDoc === tab.id
-                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                  : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white'
+                  ? 'bg-[#4480A6] text-white border border-[#92D2F9] shadow-sm'
+                  : 'bg-[#063D56] text-[#EBF6FE] hover:bg-[#074765] hover:text-white'
               }`}
             >
               {tab.icon}
@@ -108,7 +108,7 @@ export const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({
         {/* Right Toolbar Actions */}
         <div className="flex items-center gap-2">
           {/* Zoom controls */}
-          <div className="hidden sm:flex items-center bg-slate-800 rounded-lg p-0.5 border border-slate-700 text-slate-300 text-xs">
+          <div className="hidden sm:flex items-center bg-[#063D56] rounded-lg p-0.5 border border-[#4480A6] text-slate-200 text-xs">
             <button
               onClick={() => setZoomLevel((z) => Math.max(70, z - 10))}
               className="p-1 hover:text-white"
@@ -116,7 +116,7 @@ export const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({
             >
               <ZoomOut className="w-3.5 h-3.5" />
             </button>
-            <span className="px-1.5 font-mono text-[11px]">{zoomLevel}%</span>
+            <span className="px-1.5 font-mono text-[11px] text-[#92D2F9]">{zoomLevel}%</span>
             <button
               onClick={() => setZoomLevel((z) => Math.min(140, z + 10))}
               className="p-1 hover:text-white"
@@ -129,37 +129,37 @@ export const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({
           {/* Edit button */}
           <button
             onClick={() => onEdit(tx)}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-medium rounded-lg border border-slate-700 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#063D56] hover:bg-[#4480A6] text-white text-xs font-medium rounded-lg border border-[#4480A6] transition-colors"
           >
-            <Edit className="w-3.5 h-3.5 text-amber-400" />
+            <Edit className="w-3.5 h-3.5 text-[#FDE8B5]" />
             <span>Edit Data</span>
           </button>
 
           {/* Duplicate button */}
           <button
             onClick={() => onDuplicate(tx)}
-            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-medium rounded-lg border border-slate-700 transition-colors"
+            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-[#063D56] hover:bg-[#4480A6] text-white text-xs font-medium rounded-lg border border-[#4480A6] transition-colors"
           >
-            <Copy className="w-3.5 h-3.5 text-blue-400" />
+            <Copy className="w-3.5 h-3.5 text-[#92D2F9]" />
             <span>Duplikasi</span>
           </button>
 
-          {/* Download PDF button */}
+          {/* Download PDF button (Warm Cream with dark teal text) */}
           <button
             onClick={handleDownloadPdf}
             disabled={isExporting}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg shadow-sm transition-colors disabled:opacity-50"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#FDE8B5] hover:bg-[#fce19a] text-[#085070] text-xs font-bold rounded-lg shadow-sm transition-colors disabled:opacity-50"
           >
-            <Download className="w-3.5 h-3.5" />
+            <Download className="w-3.5 h-3.5 text-[#085070]" />
             <span>{isExporting ? (exportMessage || 'Proses...') : 'Unduh PDF'}</span>
           </button>
 
           {/* Print button */}
           <button
             onClick={handlePrint}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-lg shadow-sm transition-colors"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#4480A6] hover:bg-[#376d8f] text-white text-xs font-bold rounded-lg shadow-sm border border-[#92D2F9]/50 transition-colors"
           >
-            <Printer className="w-3.5 h-3.5" />
+            <Printer className="w-3.5 h-3.5 text-[#92D2F9]" />
             <span>Cetak (A4)</span>
           </button>
 

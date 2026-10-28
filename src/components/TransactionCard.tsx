@@ -48,7 +48,7 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
         {/* Status & Date */}
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
-            <Calendar className="w-3.5 h-3.5 text-indigo-600" />
+            <Calendar className="w-3.5 h-3.5 text-[#4480A6]" />
             <span>{formatTanggalIndonesia(tx.tanggalPesanan)}</span>
             <span className="text-slate-300">•</span>
             <span className="text-slate-400 font-mono text-[11px]">{tx.alokasiAnggaran || 'BOS'}</span>
@@ -66,37 +66,37 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
         <div>
           <h3
             onClick={() => onView(tx)}
-            className="text-base font-bold text-slate-800 group-hover:text-indigo-600 cursor-pointer transition-colors line-clamp-1"
+            className="text-base font-bold text-slate-800 group-hover:text-[#085070] cursor-pointer transition-colors line-clamp-1"
           >
             {tx.paketPesanan || tx.keperluanSPMU || 'Pengadaan Sekolah'}
           </h3>
           <p className="text-xs text-slate-500 flex items-center gap-1.5 mt-0.5">
-            <Store className="w-3.5 h-3.5 text-slate-400" />
+            <Store className="w-3.5 h-3.5 text-[#4480A6]" />
             <strong className="text-slate-700">{tx.vendor.namaToko}</strong>
             {tx.vendor.namaPemilik && <span className="text-slate-400">({tx.vendor.namaPemilik})</span>}
           </p>
         </div>
 
         {/* 4 Connected Documents Badges */}
-        <div className="bg-slate-50 rounded-xl p-3 border border-slate-100 space-y-1.5 text-xs">
-          <div className="text-[10.5px] font-bold text-slate-400 uppercase tracking-wider">
+        <div className="bg-[#EBF6FE]/70 rounded-xl p-3 border border-[#92D2F9]/70 space-y-1.5 text-xs">
+          <div className="text-[10.5px] font-bold text-[#085070] uppercase tracking-wider">
             Dokumen Terhubung:
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 font-mono text-[11px]">
             <div className="flex items-center gap-1.5 truncate text-slate-700" title={`SP: ${tx.nomorPesanan}`}>
-              <FileText className="w-3.5 h-3.5 text-blue-600 flex-shrink-0" />
+              <FileText className="w-3.5 h-3.5 text-[#085070] flex-shrink-0" />
               <span className="truncate">SP: {tx.nomorPesanan}</span>
             </div>
             <div className="flex items-center gap-1.5 truncate text-slate-700" title={`BAST: ${tx.nomorBAST}`}>
-              <FileStack className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+              <FileStack className="w-3.5 h-3.5 text-[#4480A6] flex-shrink-0" />
               <span className="truncate">BAST: {tx.nomorBAST}</span>
             </div>
             <div className="flex items-center gap-1.5 truncate text-slate-700" title={`SPMU: ${tx.nomorSPMU}`}>
-              <Coins className="w-3.5 h-3.5 text-purple-600 flex-shrink-0" />
+              <Coins className="w-3.5 h-3.5 text-amber-700 flex-shrink-0" />
               <span className="truncate">SPMU: {tx.nomorSPMU}</span>
             </div>
             <div className="flex items-center gap-1.5 truncate text-slate-700" title={`Perencanaan: ${tx.school.namaSekolah}`}>
-              <FileCheck className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" />
+              <FileCheck className="w-3.5 h-3.5 text-[#085070] flex-shrink-0" />
               <span className="truncate">Perenc: {tx.kategoriBarangJasa || 'Ada'}</span>
             </div>
           </div>
@@ -121,7 +121,7 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
         {/* Total Price & Terbilang */}
         <div className="flex items-baseline justify-between">
           <span className="text-xs font-medium text-slate-500">Total Transaksi:</span>
-          <span className="text-lg font-bold font-mono text-indigo-700">
+          <span className="text-lg font-bold font-mono text-[#085070]">
             {formatRupiah(tx.totalPembayaran, true)}
           </span>
         </div>
@@ -132,9 +132,9 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
           <button
             type="button"
             onClick={() => onView(tx)}
-            className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-xs hover:shadow-indigo-500/20 transition-all"
+            className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-[#085070] hover:bg-[#063D56] text-white rounded-xl text-xs font-bold shadow-xs hover:shadow-[#085070]/20 transition-all"
           >
-            <Eye className="w-3.5 h-3.5" />
+            <Eye className="w-3.5 h-3.5 text-[#92D2F9]" />
             <span>Buka 4 Dokumen</span>
           </button>
 

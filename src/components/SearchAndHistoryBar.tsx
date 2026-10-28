@@ -64,7 +64,7 @@ export const SearchAndHistoryBar: React.FC<SearchAndHistoryBarProps> = ({
             onFocus={() => setShowHistoryDropdown(true)}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Cari nomor surat (SP, BAST, SPMU), tanggal, nama toko, atau nama barang..."
-            className="w-full pl-10 pr-9 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all text-slate-800 placeholder-slate-400"
+            className="w-full pl-10 pr-9 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-hidden focus:ring-2 focus:ring-[#4480A6] focus:bg-white transition-all text-slate-800 placeholder-slate-400"
           />
           {searchQuery && (
             <button
@@ -84,8 +84,8 @@ export const SearchAndHistoryBar: React.FC<SearchAndHistoryBarProps> = ({
               ></div>
               <div className="absolute left-0 right-0 top-full mt-1.5 z-30 bg-white rounded-xl shadow-xl border border-slate-200 p-2.5">
                 <div className="flex items-center justify-between pb-2 mb-1 border-b border-slate-100 text-[11px] font-semibold text-slate-500">
-                  <span className="flex items-center gap-1.5">
-                    <History className="w-3.5 h-3.5 text-indigo-600" />
+                  <span className="flex items-center gap-1.5 text-[#085070]">
+                    <History className="w-3.5 h-3.5 text-[#4480A6]" />
                     Riwayat Pencarian Dokumen
                   </span>
                   <button
@@ -108,10 +108,10 @@ export const SearchAndHistoryBar: React.FC<SearchAndHistoryBarProps> = ({
                         onSelectHistory(term);
                         setShowHistoryDropdown(false);
                       }}
-                      className="w-full text-left px-2.5 py-1.5 hover:bg-indigo-50 rounded-lg text-xs text-slate-700 flex items-center justify-between group transition-colors"
+                      className="w-full text-left px-2.5 py-1.5 hover:bg-[#EBF6FE] rounded-lg text-xs text-slate-700 flex items-center justify-between group transition-colors"
                     >
                       <span className="flex items-center gap-2 truncate">
-                        <Clock className="w-3 h-3 text-slate-400 group-hover:text-indigo-600 flex-shrink-0" />
+                        <Clock className="w-3 h-3 text-[#4480A6] group-hover:text-[#085070] flex-shrink-0" />
                         <span className="truncate">{term}</span>
                       </span>
                     </button>
@@ -125,13 +125,13 @@ export const SearchAndHistoryBar: React.FC<SearchAndHistoryBarProps> = ({
         {/* Date Filter */}
         <div className="sm:w-52 relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-            <Calendar className="w-4 h-4" />
+            <Calendar className="w-4 h-4 text-[#4480A6]" />
           </div>
           <input
             type="date"
             value={dateFilter}
             onChange={(e) => onDateFilterChange(e.target.value)}
-            className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:bg-white text-slate-700"
+            className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-hidden focus:ring-2 focus:ring-[#4480A6] focus:bg-white text-slate-700"
             title="Filter dokumen berdasarkan tanggal"
           />
           {dateFilter && (
@@ -149,7 +149,7 @@ export const SearchAndHistoryBar: React.FC<SearchAndHistoryBarProps> = ({
           <select
             value={statusFilter}
             onChange={(e) => onStatusFilterChange(e.target.value)}
-            className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:bg-white text-slate-700"
+            className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-hidden focus:ring-2 focus:ring-[#4480A6] focus:bg-white text-slate-700"
           >
             <option value="all">Semua Status</option>
             <option value="Selesai">Selesai (Siap)</option>
@@ -163,8 +163,8 @@ export const SearchAndHistoryBar: React.FC<SearchAndHistoryBarProps> = ({
       <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-slate-100 text-xs">
         {/* Recent Search Chips */}
         <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="text-slate-400 font-medium flex items-center gap-1 text-[11px]">
-            <Tag className="w-3 h-3" />
+          <span className="text-[#085070] font-semibold flex items-center gap-1 text-[11px]">
+            <Tag className="w-3 h-3 text-[#4480A6]" />
             Pencarian Cepat:
           </span>
           {searchHistory.slice(0, 4).map((item, idx) => (
@@ -172,7 +172,7 @@ export const SearchAndHistoryBar: React.FC<SearchAndHistoryBarProps> = ({
               key={idx}
               type="button"
               onClick={() => onSelectHistory(item)}
-              className="px-2.5 py-1 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-600 rounded-full text-[11px] font-medium transition-colors border border-slate-200/60"
+              className="px-2.5 py-1 bg-[#EBF6FE] hover:bg-[#92D2F9]/40 text-[#085070] rounded-full text-[11px] font-semibold transition-colors border border-[#92D2F9]"
             >
               {item}
             </button>
@@ -187,13 +187,13 @@ export const SearchAndHistoryBar: React.FC<SearchAndHistoryBarProps> = ({
         {/* Counter and Clear Filter */}
         <div className="flex items-center gap-3 ml-auto text-slate-500 text-[11px]">
           <span>
-            Ditemukan <strong className="text-slate-800">{totalResults}</strong> dokumen transaksi
+            Ditemukan <strong className="text-[#085070]">{totalResults}</strong> dokumen transaksi
           </span>
           {hasActiveFilters && (
             <button
               type="button"
               onClick={handleClearAllFilters}
-              className="flex items-center gap-1 text-indigo-600 hover:text-indigo-800 font-semibold transition-colors"
+              className="flex items-center gap-1 text-[#085070] hover:text-[#063D56] font-bold transition-colors"
             >
               <RotateCcw className="w-3 h-3" />
               Reset Filter

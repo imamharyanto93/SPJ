@@ -174,22 +174,24 @@ export const BastDoc: React.FC<BastDocProps> = ({ tx }) => {
         </p>
       </div>
 
-      {/* Tanda Tangan 3 Pihak */}
+      {/* Tanda Tangan 3 Pihak: Pihak Pertama di Kiri, Pihak Kedua di Kanan */}
       <div className="grid grid-cols-2 gap-4 mt-4 text-[10px]">
-        {/* Pihak Kedua (Sekolah) */}
+        {/* Pihak Pertama (Penyedia) - Sebelah Kiri */}
         <div className="text-left pl-4">
+          <div className="font-bold">PIHAK PERTAMA</div>
+          <div className="h-16"></div>
+          <div className="font-bold underline text-[10.5px]">
+            {tx.vendor.namaPemilik || '....................................'}
+          </div>
+          <div className="mt-0.5 font-bold">Toko : {tx.vendor.namaToko}</div>
+        </div>
+
+        {/* Pihak Kedua (Sekolah) - Sebelah Kanan */}
+        <div className="text-right pr-4">
           <div className="font-bold">PIHAK KEDUA</div>
           <div className="h-16"></div>
           <div className="font-bold underline text-[10.5px]">{tx.school.namaKepalaSekolah}</div>
           <div className="mt-0.5">NIP. {tx.school.nipKepalaSekolah}</div>
-        </div>
-
-        {/* Pihak Pertama (Penyedia) */}
-        <div className="text-right pr-4">
-          <div className="font-bold">PIHAK PERTAMA</div>
-          <div className="h-16"></div>
-          <div className="tracking-widest">....................................</div>
-          <div className="mt-1 font-bold">Toko : {tx.vendor.namaToko}</div>
         </div>
       </div>
 

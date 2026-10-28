@@ -205,6 +205,14 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans">
+      {/* Decorative Brand Topbar matching user swatch: 4 distinct color stripes */}
+      <div className="grid grid-cols-4 h-1.5 w-full">
+        <div className="bg-[#085070]"></div>
+        <div className="bg-[#4480A6]"></div>
+        <div className="bg-[#92D2F9]"></div>
+        <div className="bg-[#FDE8B5]"></div>
+      </div>
+
       {/* Top Main Navigation Bar */}
       <header className="no-print bg-white border-b border-slate-200 sticky top-0 z-30 shadow-2xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between gap-4">
@@ -215,10 +223,10 @@ export default function App() {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-sm sm:text-base font-extrabold text-slate-900 tracking-tight flex items-center gap-1.5">
+                <h1 className="text-sm sm:text-base font-extrabold text-[#085070] tracking-tight flex items-center gap-1.5">
                   Aplikasi Dokumen Pengadaan Sekolah
                 </h1>
-                <span className="hidden md:inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                <span className="hidden md:inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#EBF6FE] text-[#085070] border border-[#92D2F9]">
                   SP • Dok. Perencanaan • BAST • SPMU
                 </span>
               </div>
@@ -232,10 +240,10 @@ export default function App() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setIsSchoolSettingsOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-2 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl transition-all shadow-2xs"
+              className="flex items-center gap-1.5 px-3 py-2 border border-slate-200 hover:border-[#4480A6] hover:bg-[#EBF6FE] text-[#085070] text-xs font-semibold rounded-xl transition-all shadow-2xs"
               title="Pengaturan Kop Surat & Pejabat Sekolah"
             >
-              <Settings className="w-3.5 h-3.5 text-slate-500" />
+              <Settings className="w-3.5 h-3.5 text-[#4480A6]" />
               <span className="hidden sm:inline">Profil Sekolah</span>
             </button>
 
@@ -244,9 +252,9 @@ export default function App() {
                 setEditingTx(null);
                 setIsEditorOpen(true);
               }}
-              className="flex items-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 active:scale-98 text-white text-xs font-bold rounded-xl transition-all shadow-sm hover:shadow-indigo-500/20"
+              className="flex items-center gap-1.5 px-4 py-2 bg-[#085070] hover:bg-[#063D56] active:scale-98 text-white text-xs font-bold rounded-xl transition-all shadow-sm hover:shadow-[#085070]/20"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-4 h-4 text-[#92D2F9]" />
               <span>Buat Transaksi Baru</span>
             </button>
           </div>
@@ -257,11 +265,11 @@ export default function App() {
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
         {/* Banner / Overview Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs">
+          <div className="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-2xs hover:border-[#92D2F9] transition-colors">
             <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
               Total Transaksi
             </div>
-            <div className="text-xl sm:text-2xl font-black text-slate-800 mt-1">
+            <div className="text-xl sm:text-2xl font-black text-[#085070] mt-1">
               {transactions.length}
             </div>
             <div className="text-[11px] text-slate-500 mt-0.5">
@@ -269,23 +277,28 @@ export default function App() {
             </div>
           </div>
 
-          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs">
-            <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-              Total Nilai Belanja
+          <div className="bg-gradient-to-br from-white to-[#EBF6FE] p-4 rounded-2xl border border-[#92D2F9] shadow-2xs">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#4480A6]">
+                Total Nilai Belanja
+              </span>
+              <span className="px-1.5 py-0.5 rounded text-[9.5px] font-bold bg-[#FDE8B5] text-[#8C6A1D]">
+                BOSP
+              </span>
             </div>
-            <div className="text-xl sm:text-2xl font-black text-indigo-600 font-mono mt-1">
+            <div className="text-xl sm:text-2xl font-black text-[#085070] font-mono mt-1">
               {formatRupiah(totalNominal, true)}
             </div>
             <div className="text-[11px] text-slate-500 mt-0.5">
-              Akumulasi anggaran BOSP
+              Akumulasi anggaran belanja
             </div>
           </div>
 
-          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs">
+          <div className="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-2xs hover:border-[#92D2F9] transition-colors">
             <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
               Dokumen Terbit
             </div>
-            <div className="text-xl sm:text-2xl font-black text-slate-800 mt-1">
+            <div className="text-xl sm:text-2xl font-black text-[#4480A6] mt-1">
               {transactions.length * 4} <span className="text-xs font-normal text-slate-400">Surat</span>
             </div>
             <div className="text-[11px] text-slate-500 mt-0.5">
@@ -343,10 +356,10 @@ export default function App() {
         ) : (
           /* Empty State */
           <div className="bg-white rounded-2xl border border-dashed border-slate-300 p-12 text-center space-y-3">
-            <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto">
+            <div className="w-12 h-12 bg-[#EBF6FE] text-[#085070] border border-[#92D2F9] rounded-2xl flex items-center justify-center mx-auto">
               <FileSpreadsheet className="w-6 h-6" />
             </div>
-            <h3 className="text-base font-bold text-slate-800">
+            <h3 className="text-base font-bold text-[#085070]">
               Tidak Ada Dokumen Transaksi Ditemukan
             </h3>
             <p className="text-xs text-slate-500 max-w-md mx-auto">
@@ -372,7 +385,7 @@ export default function App() {
                     setEditingTx(null);
                     setIsEditorOpen(true);
                   }}
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-xs transition-colors"
+                  className="px-4 py-2 bg-[#085070] hover:bg-[#063D56] text-white text-xs font-bold rounded-xl shadow-xs transition-colors"
                 >
                   + Tambah Transaksi Pertama
                 </button>

@@ -44,6 +44,7 @@ export const INITIAL_TRANSACTIONS: TransactionDocument[] = [
     persyaratanPenyedia:
       'Perorangan/Badan Usaha Memenuhi syarat sebagai berikut :\na. Identitas Penyedia\nb. NPWP',
     keperluanSPMU: 'Pembayaran Jasa Internet 20Mbps',
+    tujuanBendaharaSpmu: 'Bendahara BOSP',
     tahunAnggaran: '2026',
     items: [
       {
@@ -97,6 +98,7 @@ export const INITIAL_TRANSACTIONS: TransactionDocument[] = [
     persyaratanPenyedia:
       'Perorangan/Badan Usaha Memenuhi syarat sebagai berikut :\na. Identitas Penyedia\nb. NPWP',
     keperluanSPMU: 'Pembelian Buku Administrasi Kelas',
+    tujuanBendaharaSpmu: 'Bendahara BOSP',
     tahunAnggaran: '2026',
     items: [
       {

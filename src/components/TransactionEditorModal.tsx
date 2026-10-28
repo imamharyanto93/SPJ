@@ -63,6 +63,7 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
       persyaratanPenyedia:
         'Perorangan/Badan Usaha Memenuhi syarat sebagai berikut :\na. Identitas Penyedia\nb. NPWP',
       keperluanSPMU: '',
+      tujuanBendaharaSpmu: defaultSchool.namaBendahara || 'Bendahara BOSP',
       tahunAnggaran: String(new Date().getFullYear()),
       items: [
         {
@@ -103,17 +104,36 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
   const updateCalculations = (
     items: OrderItem[],
     ppnRate: number = formData.ppnRate,
-    pphRate: number = formData.pphRate
+    pphRate: number = formData.pphRate,
+    dppPpn?: number,
+    manualPpnNominal?: number,
+    manualPphNominal?: number
   ) => {
     const totalSebelum = items.reduce((sum, item) => sum + (Number(item.jumlahHarga) || 0), 0);
-    const ppnNominal = ppnRate > 0 ? Math.round(totalSebelum * (ppnRate / 100)) : 0;
-    const pphNominal = pphRate > 0 ? Math.round(totalSebelum * (pphRate / 100)) : 0;
+    const effectiveDpp = dppPpn !== undefined ? dppPpn : (formData.dppPpn || 0);
+
+    const baseForPpn = effectiveDpp > 0 ? effectiveDpp : totalSebelum;
+    const ppnNominal =
+      manualPpnNominal !== undefined
+        ? manualPpnNominal
+        : ppnRate > 0
+        ? Math.round(baseForPpn * (ppnRate / 100))
+        : 0;
+
+    const pphNominal =
+      manualPphNominal !== undefined
+        ? manualPphNominal
+        : pphRate > 0
+        ? Math.round(totalSebelum * (pphRate / 100))
+        : 0;
+
     const totalBayar = totalSebelum + ppnNominal;
 
     setFormData((prev) => ({
       ...prev,
       items,
       totalSebelumPpn: totalSebelum,
+      dppPpn: effectiveDpp,
       ppnRate,
       ppnNominal,
       pphRate,
@@ -187,7 +207,7 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
         <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
           <div>
             <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-              <FileSpreadsheet className="w-5 h-5 text-indigo-600" />
+              <FileSpreadsheet className="w-5 h-5 text-[#085070]" />
               {initialData ? 'Edit Dokumen Transaksi' : 'Buat Transaksi Pengadaan Baru'}
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
@@ -209,11 +229,11 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
             onClick={() => setActiveTab('info')}
             className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition-all ${
               activeTab === 'info'
-                ? 'border-indigo-600 text-indigo-600'
+                ? 'border-[#085070] text-[#085070]'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
-            <FileText className="w-4 h-4" />
+            <FileText className="w-4 h-4 text-[#4480A6]" />
             1. Nomor & Tanggal Surat
           </button>
           <button
@@ -221,11 +241,11 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
             onClick={() => setActiveTab('items')}
             className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition-all ${
               activeTab === 'items'
-                ? 'border-indigo-600 text-indigo-600'
+                ? 'border-[#085070] text-[#085070]'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
-            <Receipt className="w-4 h-4" />
+            <Receipt className="w-4 h-4 text-[#4480A6]" />
             2. Rincian Belanja & Harga ({formData.items.length})
           </button>
           <button
@@ -233,11 +253,11 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
             onClick={() => setActiveTab('vendor')}
             className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition-all ${
               activeTab === 'vendor'
-                ? 'border-indigo-600 text-indigo-600'
+                ? 'border-[#085070] text-[#085070]'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
-            <Store className="w-4 h-4" />
+            <Store className="w-4 h-4 text-[#4480A6]" />
             3. Data Rekanan / Toko
           </button>
           <button
@@ -245,11 +265,11 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
             onClick={() => setActiveTab('officers')}
             className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition-all ${
               activeTab === 'officers'
-                ? 'border-indigo-600 text-indigo-600'
+                ? 'border-[#085070] text-[#085070]'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
-            <Building2 className="w-4 h-4" />
+            <Building2 className="w-4 h-4 text-[#4480A6]" />
             4. Satuan Pendidikan & Pejabat TTD
           </button>
         </div>
@@ -379,17 +399,48 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Untuk Keperluan (Tercetak di SPMU)
-                </label>
-                <input
-                  type="text"
-                  value={formData.keperluanSPMU}
-                  onChange={(e) => setFormData({ ...formData, keperluanSPMU: e.target.value })}
-                  className="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
-                  placeholder="Pembayaran Jasa Internet 20Mbps Bulan Februari 2026 / Pembelian Buku Administrasi Kelas"
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Untuk Keperluan (Tercetak di SPMU)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.keperluanSPMU}
+                    onChange={(e) => setFormData({ ...formData, keperluanSPMU: e.target.value })}
+                    className="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#4480A6]"
+                    placeholder="Pembayaran Jasa Internet 20Mbps / Pembelian Buku"
+                  />
+                </div>
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-bold text-slate-700">
+                      Teks Penerima SPMU (Untuk : ...) *
+                    </label>
+                    <span className="text-[10px] text-[#4480A6] font-semibold">Tercetak di SPMU</span>
+                  </div>
+                  <input
+                    type="text"
+                    value={formData.tujuanBendaharaSpmu ?? 'Bendahara BOSP'}
+                    onChange={(e) => setFormData({ ...formData, tujuanBendaharaSpmu: e.target.value })}
+                    className="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#4480A6] font-medium"
+                    placeholder="Bendahara BOSP"
+                  />
+                  {/* Quick pills */}
+                  <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
+                    <span className="text-[10px] text-slate-400">Pilihan cepat:</span>
+                    {['Bendahara BOSP', 'Bendahara BOS Reguler', 'Bendahara Sekolah'].map((option) => (
+                      <button
+                        key={option}
+                        type="button"
+                        onClick={() => setFormData({ ...formData, tujuanBendaharaSpmu: option })}
+                        className="px-2 py-0.5 text-[10px] bg-[#EBF6FE] hover:bg-[#92D2F9]/40 text-[#085070] rounded border border-[#92D2F9] font-medium transition-colors"
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
 
               {/* Tanggal-tanggal */}
@@ -591,43 +642,101 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
               {/* Pajak & Ringkasan Perhitungan */}
               <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-3">
-                  <h4 className="text-xs font-bold text-slate-700">Pengaturan Pajak (PPN & PPh)</h4>
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold text-slate-700">Pengaturan Pajak (PPN & PPh)</h4>
+                    <span className="text-[10px] text-slate-400 font-medium">Input Manual Persentase & DPP</span>
+                  </div>
+
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className="block text-[11px] font-medium text-slate-600 mb-1">
                         Tarif PPN (%)
                       </label>
-                      <select
-                        value={formData.ppnRate}
-                        onChange={(e) => {
-                          const rate = Number(e.target.value);
-                          updateCalculations(formData.items, rate, formData.pphRate);
-                        }}
-                        className="w-full text-xs px-3 py-1.5 border border-slate-300 rounded-lg bg-white"
-                      >
-                        <option value={0}>Bebas PPN (0%)</option>
-                        <option value={11}>PPN 11%</option>
-                        <option value={12}>PPN 12%</option>
-                      </select>
+                      <div className="relative">
+                        <input
+                          type="number"
+                          min="0"
+                          step="any"
+                          value={formData.ppnRate || ''}
+                          onChange={(e) => {
+                            const rate = e.target.value === '' ? 0 : Number(e.target.value);
+                            updateCalculations(formData.items, rate, formData.pphRate);
+                          }}
+                          placeholder="0"
+                          className="w-full text-xs px-3 py-1.5 border border-slate-300 rounded-lg bg-white pr-7 font-mono"
+                        />
+                        <span className="absolute right-2.5 top-1.5 text-xs text-slate-400 font-semibold">%</span>
+                      </div>
                     </div>
 
                     <div>
                       <label className="block text-[11px] font-medium text-slate-600 mb-1">
                         Tarif PPh (%)
                       </label>
-                      <select
-                        value={formData.pphRate}
-                        onChange={(e) => {
-                          const rate = Number(e.target.value);
-                          updateCalculations(formData.items, formData.ppnRate, rate);
-                        }}
-                        className="w-full text-xs px-3 py-1.5 border border-slate-300 rounded-lg bg-white"
-                      >
-                        <option value={0}>Tidak ada PPh (0%)</option>
-                        <option value={1.5}>PPh 22 (1.5%)</option>
-                        <option value={2}>PPh 23 (2%)</option>
-                      </select>
+                      <div className="relative">
+                        <input
+                          type="number"
+                          min="0"
+                          step="any"
+                          value={formData.pphRate || ''}
+                          onChange={(e) => {
+                            const rate = e.target.value === '' ? 0 : Number(e.target.value);
+                            updateCalculations(formData.items, formData.ppnRate, rate);
+                          }}
+                          placeholder="0"
+                          className="w-full text-xs px-3 py-1.5 border border-slate-300 rounded-lg bg-white pr-7 font-mono"
+                        />
+                        <span className="absolute right-2.5 top-1.5 text-xs text-slate-400 font-semibold">%</span>
+                      </div>
                     </div>
+                  </div>
+
+                  {/* DPP PPN (Terhubung ke Surat Pesanan) */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block text-[11px] font-medium text-slate-600">
+                        DPP PPN (Rp) <span className="text-indigo-600 font-semibold">(Tercetak di Surat Pesanan)</span>
+                      </label>
+                      {formData.totalSebelumPpn > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            updateCalculations(
+                              formData.items,
+                              formData.ppnRate,
+                              formData.pphRate,
+                              formData.totalSebelumPpn
+                            );
+                          }}
+                          className="text-[10px] text-indigo-600 hover:text-indigo-800 font-medium underline"
+                        >
+                          Isi Otomatis dari Total Belanja
+                        </button>
+                      )}
+                    </div>
+                    <div className="relative">
+                      <span className="absolute left-2.5 top-1.5 text-xs text-slate-400 font-semibold">Rp</span>
+                      <input
+                        type="number"
+                        min="0"
+                        step="any"
+                        value={formData.dppPpn ?? ''}
+                        onChange={(e) => {
+                          const val = e.target.value === '' ? 0 : Number(e.target.value);
+                          updateCalculations(
+                            formData.items,
+                            formData.ppnRate,
+                            formData.pphRate,
+                            val
+                          );
+                        }}
+                        placeholder="Contoh: 710000"
+                        className="w-full text-xs pl-8 pr-3 py-1.5 border border-slate-300 rounded-lg bg-white font-mono"
+                      />
+                    </div>
+                    <p className="text-[10px] text-slate-400 mt-0.5">
+                      Nilai DPP PPN ini otomatis tercetak pada baris DPP PPN di Surat Pesanan.
+                    </p>
                   </div>
 
                   <div>
@@ -654,18 +763,60 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
                     <span>Total Sebelum PPN:</span>
                     <span className="font-mono font-semibold">{formatRupiah(formData.totalSebelumPpn, true)}</span>
                   </div>
-                  {formData.ppnRate > 0 && (
-                    <div className="flex justify-between text-slate-600">
-                      <span>PPN ({formData.ppnRate}%):</span>
-                      <span className="font-mono">{formatRupiah(formData.ppnNominal, true)}</span>
+                  <div className="flex justify-between items-center text-slate-600">
+                    <span>DPP PPN:</span>
+                    <span className="font-mono text-slate-700">
+                      {formData.dppPpn ? formatRupiah(formData.dppPpn, true) : '-'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-slate-600">
+                    <span>PPN ({formData.ppnRate}%):</span>
+                    <div className="flex items-center gap-1 font-mono">
+                      <span>Rp</span>
+                      <input
+                        type="number"
+                        min="0"
+                        value={formData.ppnNominal || ''}
+                        onChange={(e) => {
+                          const val = e.target.value === '' ? 0 : Number(e.target.value);
+                          updateCalculations(
+                            formData.items,
+                            formData.ppnRate,
+                            formData.pphRate,
+                            formData.dppPpn,
+                            val,
+                            formData.pphNominal
+                          );
+                        }}
+                        placeholder="0"
+                        className="w-24 text-right px-1.5 py-0.5 border border-slate-200 rounded text-xs font-mono"
+                      />
                     </div>
-                  )}
-                  {formData.pphRate > 0 && (
-                    <div className="flex justify-between text-amber-700">
-                      <span>PPh ({formData.pphRate}%):</span>
-                      <span className="font-mono">{formatRupiah(formData.pphNominal, true)}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-amber-700">
+                    <span>PPh ({formData.pphRate}%):</span>
+                    <div className="flex items-center gap-1 font-mono">
+                      <span>Rp</span>
+                      <input
+                        type="number"
+                        min="0"
+                        value={formData.pphNominal || ''}
+                        onChange={(e) => {
+                          const val = e.target.value === '' ? 0 : Number(e.target.value);
+                          updateCalculations(
+                            formData.items,
+                            formData.ppnRate,
+                            formData.pphRate,
+                            formData.dppPpn,
+                            formData.ppnNominal,
+                            val
+                          );
+                        }}
+                        placeholder="0"
+                        className="w-24 text-right px-1.5 py-0.5 border border-slate-200 rounded text-xs font-mono"
+                      />
                     </div>
-                  )}
+                  </div>
                   <div className="border-t border-slate-200 pt-2 flex justify-between text-sm font-bold text-slate-900">
                     <span>Total Pembayaran:</span>
                     <span className="text-indigo-600 font-mono">{formatRupiah(formData.totalPembayaran, true)}</span>
@@ -1004,9 +1155,9 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
               </button>
               <button
                 type="submit"
-                className="flex items-center gap-1.5 px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg shadow-sm transition-colors"
+                className="flex items-center gap-1.5 px-5 py-2 bg-[#085070] hover:bg-[#063D56] text-white text-xs font-bold rounded-lg shadow-sm hover:shadow-[#085070]/20 transition-all"
               >
-                <Check className="w-4 h-4" />
+                <Check className="w-4 h-4 text-[#92D2F9]" />
                 Simpan Transaksi & 4 Dokumen
               </button>
             </div>

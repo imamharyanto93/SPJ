@@ -66,6 +66,7 @@ export interface TransactionDocument {
   lokasiSerahTerima: string; // e.g. "SD Negeri Silebu 4"
   persyaratanPenyedia: string; // e.g. "Perorangan/Badan Usaha Memenuhi syarat sebagai berikut :\na. Identitas Penyedia\nb. NPWP"
   keperluanSPMU: string; // e.g. "Pembayaran Jasa Internet 20Mbps" atau "Pembelian Buku Administrasi Kelas"
+  tujuanBendaharaSpmu?: string; // Teks manual penerima SPMU (e.g. "Bendahara BOSP", "Bendahara BOS Reguler")
   tahunAnggaran: string; // e.g. "2026"
 
   // Pajak & Rincian Pembayaran

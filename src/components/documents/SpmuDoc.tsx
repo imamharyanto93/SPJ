@@ -14,8 +14,8 @@ export const SpmuDoc: React.FC<SpmuDocProps> = ({ tx }) => {
 
   return (
     <div className="doc-font bg-white text-black text-[12px] leading-relaxed p-8 md:p-12 max-w-[210mm] mx-auto min-h-[297mm] shadow-md border border-slate-200 print:shadow-none print:border-none print:p-0">
-      {/* Kop Surat */}
-      <KopSurat school={tx.school} variant="spmu" />
+      {/* Kop Surat (Identik dengan BAST & Surat Pesanan) */}
+      <KopSurat school={tx.school} />
 
       {/* Judul Dokumen */}
       <div className="text-center my-6">
@@ -42,7 +42,7 @@ export const SpmuDoc: React.FC<SpmuDocProps> = ({ tx }) => {
         <div className="grid grid-cols-[80px_15px_1fr] gap-1 items-baseline">
           <span className="font-medium">Untuk</span>
           <span>:</span>
-          <span className="font-semibold">{tx.school.namaBendahara || 'Bendahara BOSP'}</span>
+          <span className="font-semibold">{tx.tujuanBendaharaSpmu || tx.school.namaBendahara || 'Bendahara BOSP'}</span>
         </div>
       </div>
 
