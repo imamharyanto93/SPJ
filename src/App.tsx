@@ -277,55 +277,74 @@ export default function App() {
       <main id="main-app-content" className="no-print app-dashboard-main flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
         {/* Banner / Overview Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-          <div className="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-2xs hover:border-[#92D2F9] transition-colors">
-            <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-              Total Transaksi
+          {/* Card 1: Warna 1 (#085070) */}
+          <div className="bg-[#085070] text-white p-4 rounded-2xl border border-[#063d55] shadow-sm relative overflow-hidden transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#92D2F9]">
+                Total Transaksi
+              </span>
+              <span className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center text-white/90">
+                <FileText className="w-3.5 h-3.5" />
+              </span>
             </div>
-            <div className="text-xl sm:text-2xl font-black text-[#085070] mt-1">
+            <div className="text-xl sm:text-2xl font-black text-white mt-1">
               {transactions.length}
             </div>
-            <div className="text-[11px] text-slate-500 mt-0.5">
+            <div className="text-[11px] text-sky-100/80 mt-0.5">
               Tersambung ke 4 surat
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-white to-[#EBF6FE] p-4 rounded-2xl border border-[#92D2F9] shadow-2xs">
+          {/* Card 2: Warna 2 (#4480A6) */}
+          <div className="bg-[#4480A6] text-white p-4 rounded-2xl border border-[#376b8c] shadow-sm relative overflow-hidden transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#4480A6]">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-sky-100">
                 Total Nilai Belanja
               </span>
-              <span className="px-1.5 py-0.5 rounded text-[9.5px] font-bold bg-[#FDE8B5] text-[#8C6A1D]">
+              <span className="px-1.5 py-0.5 rounded text-[9.5px] font-bold bg-[#FDE8B5] text-[#085070] shadow-2xs">
                 BOSP
               </span>
             </div>
-            <div className="text-xl sm:text-2xl font-black text-[#085070] font-mono mt-1">
+            <div className="text-xl sm:text-2xl font-black text-white font-mono mt-1">
               {formatRupiah(totalNominal, true)}
             </div>
-            <div className="text-[11px] text-slate-500 mt-0.5">
+            <div className="text-[11px] text-sky-100/80 mt-0.5">
               Akumulasi anggaran belanja
             </div>
           </div>
 
-          <div className="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-2xs hover:border-[#92D2F9] transition-colors">
-            <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-              Dokumen Terbit
+          {/* Card 3: Warna 3 (#92D2F9) */}
+          <div className="bg-[#92D2F9] text-[#085070] p-4 rounded-2xl border border-[#78c4f0] shadow-sm relative overflow-hidden transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#085070]/85">
+                Dokumen Terbit
+              </span>
+              <span className="w-6 h-6 rounded-lg bg-[#085070]/10 flex items-center justify-center text-[#085070]">
+                <FileCheck className="w-3.5 h-3.5" />
+              </span>
             </div>
-            <div className="text-xl sm:text-2xl font-black text-[#4480A6] mt-1">
-              {transactions.length * 4} <span className="text-xs font-normal text-slate-400">Surat</span>
+            <div className="text-xl sm:text-2xl font-black text-[#085070] mt-1">
+              {transactions.length * 4} <span className="text-xs font-semibold text-[#085070]/75">Surat</span>
             </div>
-            <div className="text-[11px] text-slate-500 mt-0.5">
+            <div className="text-[11px] text-[#085070]/75 mt-0.5">
               SP, Ren, BAST & SPMU
             </div>
           </div>
 
-          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs">
-            <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-              Status Lunas / Selesai
+          {/* Card 4: Warna 4 (#FDE8B5) */}
+          <div className="bg-[#FDE8B5] text-[#085070] p-4 rounded-2xl border border-[#ebd095] shadow-sm relative overflow-hidden transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#085070]/85">
+                Status Lunas / Selesai
+              </span>
+              <span className="w-6 h-6 rounded-lg bg-[#085070]/10 flex items-center justify-center text-[#085070]">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+              </span>
             </div>
-            <div className="text-xl sm:text-2xl font-black text-emerald-600 mt-1">
+            <div className="text-xl sm:text-2xl font-black text-[#085070] mt-1">
               {transactions.filter((t) => t.status !== 'Draf').length}
             </div>
-            <div className="text-[11px] text-slate-500 mt-0.5">
+            <div className="text-[11px] text-[#085070]/75 mt-0.5">
               Siap dipertanggungjawabkan
             </div>
           </div>

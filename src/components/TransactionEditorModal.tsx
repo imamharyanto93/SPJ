@@ -37,39 +37,36 @@ const createInitialFormData = (initialData?: TransactionDocument | null): Transa
     return cloned;
   }
 
-  const todayStr = new Date().toISOString().split('T')[0];
-  const slashDate = `${todayStr.slice(8, 10)}/${todayStr.slice(5, 7)}/${todayStr.slice(0, 4)}`;
-
   return {
     id: 'tx-' + Date.now(),
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    nomorPesanan: `044/SD.24/SP/II/${new Date().getFullYear()}`,
-    nomorBAST: `045/SD.24/SP/II/${new Date().getFullYear()}`,
-    nomorSPMU: `900.1.3.6 / 09 / SDN. 24 / ${new Date().getFullYear()}`,
-    nomorPerencanaan: `043/SD.24/DOK-REN/II/${new Date().getFullYear()}`,
-    tanggalPesanan: todayStr,
-    tanggalNegosiasi: todayStr,
-    waktuPengerjaan: slashDate,
-    waktuPemrosesan: slashDate,
-    waktuPenyelesaian: slashDate,
-    tanggalBAST: todayStr,
-    tanggalSPMU: todayStr,
-    paketPesanan: 'Kegiatan Jual Beli Melalui Toko',
+    nomorPesanan: '',
+    nomorBAST: '',
+    nomorSPMU: '',
+    nomorPerencanaan: '',
+    tanggalPesanan: '',
+    tanggalNegosiasi: '',
+    waktuPengerjaan: '',
+    waktuPemrosesan: '',
+    waktuPenyelesaian: '',
+    tanggalBAST: '',
+    tanggalSPMU: '',
+    paketPesanan: '',
     kategoriBarangJasa: '',
-    alokasiAnggaran: 'BOS Reguler 2026',
-    lokasiSerahTerima: defaultSchool.namaSekolah,
+    alokasiAnggaran: '',
+    lokasiSerahTerima: defaultSchool.namaSekolah || '',
     persyaratanPenyedia:
       'Perorangan/Badan Usaha Memenuhi syarat sebagai berikut :\na. Identitas Penyedia\nb. NPWP',
     keperluanSPMU: '',
-    tujuanBendaharaSpmu: defaultSchool.namaBendahara || 'Bendahara BOSP',
-    tahunAnggaran: String(new Date().getFullYear()),
+    tujuanBendaharaSpmu: '',
+    tahunAnggaran: '',
     items: [
       {
         id: 'item-' + Date.now(),
         uraian: '',
         qty: 1,
-        satuan: 'Paket',
+        satuan: '',
         hargaSatuan: 0,
         jumlahHarga: 0,
         kondisi: 'Baik',
@@ -86,10 +83,10 @@ const createInitialFormData = (initialData?: TransactionDocument | null): Transa
     vendor: {
       namaToko: '',
       namaPemilik: '',
-      jabatan: 'Pemilik Toko',
+      jabatan: '',
       alamat: '',
       telepon: '',
-      npwp: 'Ada',
+      npwp: '',
     },
     school: { ...defaultSchool },
     status: 'Selesai',
@@ -196,15 +193,26 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
     e.preventDefault();
     if (!formData.nomorPesanan) {
       alert('Mohon isi Nomor Pesanan!');
+      setActiveTab('info');
       return;
     }
     if (!formData.vendor.namaToko) {
-      alert('Mohon isi Nama Toko / Penyedia!');
+      alert('Mohon isi Nama Toko / Penyedia di Tab 3 (Data Rekanan)!');
+      setActiveTab('vendor');
       return;
     }
 
-    // Auto set kategori if empty
+    // Auto set defaults if left empty
     let finalTx = { ...formData };
+    if (!finalTx.tahunAnggaran) {
+      finalTx.tahunAnggaran = String(new Date().getFullYear());
+    }
+    if (!finalTx.tujuanBendaharaSpmu || finalTx.tujuanBendaharaSpmu.trim() === '') {
+      finalTx.tujuanBendaharaSpmu = 'Bendahara BOSP';
+    }
+    if (!finalTx.paketPesanan) {
+      finalTx.paketPesanan = finalTx.items[0]?.uraian ? `Belanja ${finalTx.items[0].uraian}` : 'Kegiatan Jual Beli';
+    }
     if (!finalTx.kategoriBarangJasa && finalTx.items[0]?.uraian) {
       finalTx.kategoriBarangJasa = finalTx.items[0].uraian;
     }
@@ -318,7 +326,7 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
                     value={formData.nomorPesanan}
                     onChange={(e) => setFormData({ ...formData, nomorPesanan: e.target.value })}
                     className="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 font-mono"
-                    placeholder="042/SD.24/SP/II/2026"
+                    placeholder="Contoh: 042/SD.24/SP/II/2026"
                   />
                 </div>
                 <div>
@@ -331,7 +339,7 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
                     value={formData.nomorBAST}
                     onChange={(e) => setFormData({ ...formData, nomorBAST: e.target.value })}
                     className="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 font-mono"
-                    placeholder="043/SD.24/SP/II/2026"
+                    placeholder="Contoh: 043/SD.24/SP/II/2026"
                   />
                 </div>
                 <div>
@@ -344,7 +352,7 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
                     value={formData.nomorSPMU}
                     onChange={(e) => setFormData({ ...formData, nomorSPMU: e.target.value })}
                     className="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 font-mono"
-                    placeholder="900.1.3.6 / 22 / SDN. 153 / 2026"
+                    placeholder="Contoh: 900.1.3.6 / 09 / SDN. 24 / 2026"
                   />
                 </div>
               </div>
@@ -360,7 +368,7 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
                     value={formData.paketPesanan}
                     onChange={(e) => setFormData({ ...formData, paketPesanan: e.target.value })}
                     className="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
-                    placeholder="Kegiatan Jual Beli Melalui Toko"
+                    placeholder="Contoh: Kegiatan Jual Beli Melalui Toko"
                   />
                 </div>
                 <div>
@@ -372,7 +380,7 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
                     value={formData.kategoriBarangJasa}
                     onChange={(e) => setFormData({ ...formData, kategoriBarangJasa: e.target.value })}
                     className="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
-                    placeholder="Internet 20Mbps / ATK / Buku"
+                    placeholder="Contoh: Internet 20Mbps / ATK / Buku"
                   />
                 </div>
               </div>
@@ -388,7 +396,7 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
                     value={formData.alokasiAnggaran}
                     onChange={(e) => setFormData({ ...formData, alokasiAnggaran: e.target.value })}
                     className="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
-                    placeholder="BOS Reguler 2026"
+                    placeholder="Contoh: BOS Reguler 2026"
                   />
                 </div>
                 <div>
@@ -400,7 +408,7 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
                     value={formData.tahunAnggaran}
                     onChange={(e) => setFormData({ ...formData, tahunAnggaran: e.target.value })}
                     className="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 font-mono"
-                    placeholder="2026"
+                    placeholder={`Contoh: ${new Date().getFullYear()}`}
                   />
                 </div>
                 <div>
@@ -429,7 +437,7 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
                     value={formData.keperluanSPMU}
                     onChange={(e) => setFormData({ ...formData, keperluanSPMU: e.target.value })}
                     className="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#4480A6]"
-                    placeholder="Pembayaran Jasa Internet 20Mbps / Pembelian Buku"
+                    placeholder="Contoh: Pembayaran Jasa Internet 20Mbps / Pembelian Buku"
                   />
                 </div>
                 <div>
@@ -441,10 +449,10 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
                   </div>
                   <input
                     type="text"
-                    value={formData.tujuanBendaharaSpmu ?? 'Bendahara BOSP'}
+                    value={formData.tujuanBendaharaSpmu || ''}
                     onChange={(e) => setFormData({ ...formData, tujuanBendaharaSpmu: e.target.value })}
                     className="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#4480A6] font-medium"
-                    placeholder="Bendahara BOSP"
+                    placeholder="Contoh: Bendahara BOSP"
                   />
                   {/* Quick pills */}
                   <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
@@ -465,10 +473,33 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
 
               {/* Tanggal-tanggal */}
               <div className="border-t border-slate-200 pt-4">
-                <h3 className="text-xs font-bold text-slate-700 mb-3 flex items-center gap-1.5">
-                  <Calendar className="w-4 h-4 text-indigo-600" />
-                  Tanggal & Jadwal Pelaksanaan Dokumen
-                </h3>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                    <Calendar className="w-4 h-4 text-[#085070]" />
+                    Tanggal & Jadwal Pelaksanaan Dokumen
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const now = new Date();
+                      const today = now.toISOString().split('T')[0];
+                      const slash = `${today.slice(8, 10)}/${today.slice(5, 7)}/${today.slice(0, 4)}`;
+                      setFormData((prev) => ({
+                        ...prev,
+                        tanggalPesanan: today,
+                        tanggalBAST: today,
+                        tanggalSPMU: today,
+                        tanggalNegosiasi: today,
+                        waktuPengerjaan: slash,
+                        waktuPemrosesan: slash,
+                        waktuPenyelesaian: slash,
+                      }));
+                    }}
+                    className="text-[11px] text-[#085070] bg-[#EBF6FE] hover:bg-[#92D2F9]/40 border border-[#92D2F9] font-medium px-2 py-0.5 rounded transition-colors"
+                  >
+                    + Isi Tanggal Hari Ini
+                  </button>
+                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-[11px] font-medium text-slate-600 mb-1">
@@ -476,7 +507,7 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
                     </label>
                     <input
                       type="date"
-                      value={formData.tanggalPesanan}
+                      value={formData.tanggalPesanan || ''}
                       onChange={(e) => {
                         const val = e.target.value;
                         const slash = val ? `${val.slice(8, 10)}/${val.slice(5, 7)}/${val.slice(0, 4)}` : '';
@@ -499,7 +530,7 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
                     </label>
                     <input
                       type="date"
-                      value={formData.tanggalBAST}
+                      value={formData.tanggalBAST || ''}
                       onChange={(e) => setFormData({ ...formData, tanggalBAST: e.target.value })}
                       className="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg"
                     />
@@ -510,7 +541,7 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
                     </label>
                     <input
                       type="date"
-                      value={formData.tanggalSPMU}
+                      value={formData.tanggalSPMU || ''}
                       onChange={(e) => setFormData({ ...formData, tanggalSPMU: e.target.value })}
                       className="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg"
                     />
@@ -524,10 +555,10 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
                     </label>
                     <input
                       type="text"
-                      value={formData.waktuPengerjaan}
+                      value={formData.waktuPengerjaan || ''}
                       onChange={(e) => setFormData({ ...formData, waktuPengerjaan: e.target.value })}
                       className="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg"
-                      placeholder="06/02/2026"
+                      placeholder="Contoh: 06/02/2026"
                     />
                   </div>
                   <div>
@@ -536,10 +567,10 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
                     </label>
                     <input
                       type="text"
-                      value={formData.waktuPemrosesan}
+                      value={formData.waktuPemrosesan || ''}
                       onChange={(e) => setFormData({ ...formData, waktuPemrosesan: e.target.value })}
                       className="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg"
-                      placeholder="06/02/2026"
+                      placeholder="Contoh: 06/02/2026"
                     />
                   </div>
                   <div>
@@ -548,10 +579,10 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
                     </label>
                     <input
                       type="text"
-                      value={formData.waktuPenyelesaian}
+                      value={formData.waktuPenyelesaian || ''}
                       onChange={(e) => setFormData({ ...formData, waktuPenyelesaian: e.target.value })}
                       className="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg"
-                      placeholder="06/02/2026"
+                      placeholder="Contoh: 06/02/2026"
                     />
                   </div>
                 </div>
@@ -612,8 +643,9 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
                             type="number"
                             min="1"
                             step="any"
-                            value={item.qty}
-                            onChange={(e) => handleItemChange(idx, 'qty', e.target.value)}
+                            value={item.qty === 0 ? '' : item.qty}
+                            onChange={(e) => handleItemChange(idx, 'qty', e.target.value === '' ? 0 : Number(e.target.value))}
+                            placeholder="1"
                             className="w-full text-xs px-2 py-1.5 text-center border border-slate-200 rounded-md"
                           />
                         </td>
@@ -622,7 +654,7 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
                             type="text"
                             value={item.satuan}
                             onChange={(e) => handleItemChange(idx, 'satuan', e.target.value)}
-                            placeholder="Mbps, Rim, Pcs"
+                            placeholder="Contoh: Pcs / Rim / Paket"
                             className="w-full text-xs px-2 py-1.5 border border-slate-200 rounded-md"
                           />
                         </td>
@@ -631,8 +663,9 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
                             type="number"
                             min="0"
                             step="any"
-                            value={item.hargaSatuan}
-                            onChange={(e) => handleItemChange(idx, 'hargaSatuan', e.target.value)}
+                            value={item.hargaSatuan === 0 ? '' : item.hargaSatuan}
+                            onChange={(e) => handleItemChange(idx, 'hargaSatuan', e.target.value === '' ? 0 : Number(e.target.value))}
+                            placeholder="0"
                             className="w-full text-xs px-2.5 py-1.5 text-right border border-slate-200 rounded-md font-mono"
                           />
                         </td>
