@@ -13,7 +13,7 @@ export const SpmuDoc: React.FC<SpmuDocProps> = ({ tx }) => {
   const terbilangText = tx.terbilangCustom || terbilangRupiah(tx.totalPembayaran, 'capitalize');
 
   return (
-    <div className="doc-font bg-white text-black text-[12px] leading-relaxed p-8 md:p-12 max-w-[210mm] mx-auto min-h-[297mm] shadow-md border border-slate-200 print:shadow-none print:border-none print:p-0">
+    <div className="doc-font bg-white text-black text-[12px] leading-relaxed p-8 md:p-12 max-w-[210mm] mx-auto min-h-[297mm] shadow-md border border-slate-200 print:shadow-none print:border-none print:p-0 print:min-h-0 print:h-auto print:max-w-none print:w-full print:m-0">
       {/* Kop Surat (Identik dengan BAST & Surat Pesanan) */}
       <KopSurat school={tx.school} />
 

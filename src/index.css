@@ -20,72 +20,108 @@
 }
 
 @media print {
-  /* Hide application background and reset page */
+  /* Reset document and viewport to clean white page */
   html, body {
+    width: 100% !important;
+    min-width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
     background: #ffffff !important;
     background-color: #ffffff !important;
     color: #000000 !important;
     margin: 0 !important;
     padding: 0 !important;
-    height: auto !important;
     overflow: visible !important;
+    font-size: 11pt !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
   
-  /* Hide non-printable elements */
+  /* Strictly hide all non-printable application elements (dashboard, toolbar, preview badges) */
   .no-print,
+  #main-app-content,
+  .app-dashboard-main,
+  .brand-stripe,
   header,
   footer,
   aside,
   nav,
-  button {
+  button,
+  input,
+  textarea,
+  select {
     display: none !important;
   }
 
-  /* Hide everything in body by default to prevent dashboard backdrop printing */
-  body > * {
-    visibility: hidden !important;
-  }
-
-  /* Make only the document container and its contents visible */
-  #printable-document-container,
-  #printable-document-container * {
-    visibility: visible !important;
-  }
-
-  #printable-document-container {
-    position: absolute !important;
-    left: 0 !important;
-    top: 0 !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    transform: none !important; /* Never scale during print */
-    overflow: visible !important;
+  /* When printing from modal viewer, neutralize fixed and overflow wrappers so Chrome paginates properly */
+  body,
+  #root,
+  .modal-viewer-overlay,
+  .modal-viewer-viewport {
+    position: static !important;
     display: block !important;
-    background: #ffffff !important;
+    overflow: visible !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    inset: auto !important;
+    z-index: auto !important;
   }
 
-  .print-page {
-    box-shadow: none !important;
-    margin: 0 !important;
-    border: none !important;
+  /* The printable document container stays in normal document flow */
+  #printable-document-container {
+    position: static !important;
+    display: block !important;
     width: 100% !important;
     max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important; /* Critical: never scale in print! */
+    overflow: visible !important;
+    background: transparent !important;
+  }
+
+  /* Each document page in the bundle prints on its own clean sheet */
+  .print-page {
+    display: block !important;
+    position: relative !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
     page-break-after: always !important;
     break-after: page !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
-    padding: 0 !important;
-    display: block !important;
-    background: #ffffff !important;
   }
 
+  /* Avoid trailing blank page after the last document */
   .print-page:last-child {
-    page-break-after: avoid !important;
-    break-after: avoid !important;
+    page-break-after: auto !important;
+    break-after: auto !important;
   }
 
-  /* Clean official print margins */
+  /* Reset document paper container inside print pages */
+  .print-page .doc-font {
+    min-height: auto !important;
+    height: auto !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Official A4 print margins */
   @page {
     size: A4 portrait;
     margin: 8mm 12mm;

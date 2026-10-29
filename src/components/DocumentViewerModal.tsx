@@ -49,7 +49,7 @@ export const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({
     { id: 'perencanaan', label: '2. Dok. Perencanaan', icon: <FileCheck className="w-4 h-4" />, short: 'Perencanaan' },
     { id: 'bast', label: '3. BAST (Serah Terima)', icon: <FileStack className="w-4 h-4" />, short: 'BAST' },
     { id: 'spmu', label: '4. SPMU (Keluar Uang)', icon: <Coins className="w-4 h-4" />, short: 'SPMU' },
-    { id: 'all', label: '📑 Bundel 4 Dokumen', icon: <Layers className="w-4 h-4" />, short: 'Bundel Semua' },
+    { id: 'all', label: '📑 Bundel 4 Dokumen', icon: <Layers className="w-4 h-4" />, short: 'Bundel 4 Dokumen' },
   ];
 
   const handlePrint = () => {
@@ -83,9 +83,16 @@ export const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({
     }
   };
 
+  const scrollToDoc = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/75 backdrop-blur-xs flex flex-col justify-between overflow-hidden animate-in fade-in duration-150">
-      {/* Top Navbar Toolbar matching swatch: Deep Ocean Teal #085070 */}
+    <div className="fixed inset-0 z-50 bg-slate-900/75 backdrop-blur-xs flex flex-col justify-between overflow-hidden animate-in fade-in duration-150 modal-viewer-overlay print:static print:h-auto print:overflow-visible print:bg-white print:p-0 print:m-0">
+      {/* Top Navbar Toolbar (Hidden in print) */}
       <div className="no-print bg-[#085070] text-white px-4 py-3 flex flex-wrap items-center justify-between border-b border-[#063D56] gap-3">
         {/* Document Switcher Tabs */}
         <div className="flex items-center gap-1.5 overflow-x-auto py-1">
@@ -179,36 +186,138 @@ export const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({
       </div>
 
       {/* Document Viewport Area */}
-      <div className="flex-1 overflow-auto bg-slate-700/40 p-4 md:p-8 flex justify-center">
+      <div className="flex-1 overflow-auto bg-slate-700/40 p-4 md:p-8 flex flex-col items-center modal-viewer-viewport print:static print:h-auto print:overflow-visible print:bg-white print:p-0 print:m-0 print:block">
+        {/* Bundel Navigation Helper (in Preview only) */}
+        {activeDoc === 'all' && (
+          <div className="no-print sticky top-0 z-30 mb-6 bg-white/95 backdrop-blur-md rounded-xl p-3 shadow-lg border border-[#92D2F9] flex flex-wrap items-center justify-between gap-3 text-xs max-w-[210mm] w-full animate-in fade-in slide-in-from-top-2 duration-150">
+            <div className="flex items-center gap-2.5">
+              <span className="p-1.5 bg-[#EBF6FE] text-[#085070] rounded-lg">
+                <Layers className="w-4 h-4" />
+              </span>
+              <div>
+                <div className="font-bold text-[#085070] flex items-center gap-1.5">
+                  <span>Pratinjau Bundel 4 Dokumen Terhubung</span>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] bg-emerald-100 text-emerald-800 font-bold border border-emerald-300">
+                    4 Surat Berurutan (A4)
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-500 font-medium">
+                  Kegiatan: <strong className="text-slate-700">{tx.paketPesanan || tx.keperluanSPMU || 'Pengadaan'}</strong>
+                </p>
+              </div>
+            </div>
+
+            {/* Quick jump buttons in preview */}
+            <div className="flex items-center gap-1.5 text-[11px] overflow-x-auto py-0.5">
+              <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider hidden sm:inline mr-1">
+                Lompat ke:
+              </span>
+              <button
+                type="button"
+                onClick={() => scrollToDoc('bundel-page-1')}
+                className="px-2.5 py-1 bg-[#EBF6FE] hover:bg-[#92D2F9]/40 text-[#085070] font-semibold rounded-md border border-[#92D2F9]/50 transition-colors whitespace-nowrap"
+              >
+                1. Surat Pesanan
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollToDoc('bundel-page-2')}
+                className="px-2.5 py-1 bg-[#EBF6FE] hover:bg-[#92D2F9]/40 text-[#085070] font-semibold rounded-md border border-[#92D2F9]/50 transition-colors whitespace-nowrap"
+              >
+                2. Perencanaan
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollToDoc('bundel-page-3')}
+                className="px-2.5 py-1 bg-[#EBF6FE] hover:bg-[#92D2F9]/40 text-[#085070] font-semibold rounded-md border border-[#92D2F9]/50 transition-colors whitespace-nowrap"
+              >
+                3. BAST
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollToDoc('bundel-page-4')}
+                className="px-2.5 py-1 bg-[#EBF6FE] hover:bg-[#92D2F9]/40 text-[#085070] font-semibold rounded-md border border-[#92D2F9]/50 transition-colors whitespace-nowrap"
+              >
+                4. SPMU
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Printable Document Container */}
         <div
           id="printable-document-container"
           style={{ transform: `scale(${zoomLevel / 100})`, transformOrigin: 'top center' }}
-          className="transition-transform duration-100 ease-out space-y-12"
+          className="w-full max-w-[210mm] transition-transform duration-100 ease-out space-y-12 print:space-y-0 print:max-w-none print:w-full print:m-0 print:p-0"
         >
-          {/* Surat Pesanan */}
+          {/* 1. Surat Pesanan */}
           {(activeDoc === 'sp' || activeDoc === 'all') && (
-            <div className="print-page">
+            <div id="bundel-page-1" className="print-page scroll-mt-20">
+              {activeDoc === 'all' && (
+                <div className="no-print mb-2 flex items-center justify-between text-xs text-white bg-[#085070] px-4 py-2 rounded-t-xl border border-[#063D56] shadow-xs">
+                  <div className="flex items-center gap-2 font-bold">
+                    <FileText className="w-4 h-4 text-[#92D2F9]" />
+                    <span>Halaman 1 dari 4: SURAT PESANAN (SP)</span>
+                  </div>
+                  <div className="text-[11px] font-mono text-[#92D2F9]">
+                    No. {tx.nomorPesanan}
+                  </div>
+                </div>
+              )}
               <SuratPesananDoc tx={tx} />
             </div>
           )}
 
-          {/* Dokumen Perencanaan */}
+          {/* 2. Dokumen Perencanaan */}
           {(activeDoc === 'perencanaan' || activeDoc === 'all') && (
-            <div className="print-page">
+            <div id="bundel-page-2" className="print-page scroll-mt-20">
+              {activeDoc === 'all' && (
+                <div className="no-print mb-2 flex items-center justify-between text-xs text-white bg-[#085070] px-4 py-2 rounded-t-xl border border-[#063D56] shadow-xs">
+                  <div className="flex items-center gap-2 font-bold">
+                    <FileCheck className="w-4 h-4 text-[#92D2F9]" />
+                    <span>Halaman 2 dari 4: DOKUMEN PERENCANAAN</span>
+                  </div>
+                  <div className="text-[11px] font-medium text-[#FDE8B5] truncate max-w-[280px]">
+                    {tx.kategoriBarangJasa || tx.items[0]?.uraian || 'Rincian Pengadaan'}
+                  </div>
+                </div>
+              )}
               <DokumenPerencanaanDoc tx={tx} />
             </div>
           )}
 
-          {/* BAST */}
+          {/* 3. BAST */}
           {(activeDoc === 'bast' || activeDoc === 'all') && (
-            <div className="print-page">
+            <div id="bundel-page-3" className="print-page scroll-mt-20">
+              {activeDoc === 'all' && (
+                <div className="no-print mb-2 flex items-center justify-between text-xs text-white bg-[#085070] px-4 py-2 rounded-t-xl border border-[#063D56] shadow-xs">
+                  <div className="flex items-center gap-2 font-bold">
+                    <FileStack className="w-4 h-4 text-[#92D2F9]" />
+                    <span>Halaman 3 dari 4: BERITA ACARA SERAH TERIMA (BAST)</span>
+                  </div>
+                  <div className="text-[11px] font-mono text-[#92D2F9]">
+                    No. {tx.nomorBAST}
+                  </div>
+                </div>
+              )}
               <BastDoc tx={tx} />
             </div>
           )}
 
-          {/* SPMU */}
+          {/* 4. SPMU */}
           {(activeDoc === 'spmu' || activeDoc === 'all') && (
-            <div className="print-page">
+            <div id="bundel-page-4" className="print-page scroll-mt-20">
+              {activeDoc === 'all' && (
+                <div className="no-print mb-2 flex items-center justify-between text-xs text-white bg-[#085070] px-4 py-2 rounded-t-xl border border-[#063D56] shadow-xs">
+                  <div className="flex items-center gap-2 font-bold">
+                    <Coins className="w-4 h-4 text-[#FDE8B5]" />
+                    <span>Halaman 4 dari 4: SURAT PERINTAH MENGELUARKAN UANG (SPMU)</span>
+                  </div>
+                  <div className="text-[11px] font-mono text-[#FDE8B5]">
+                    No. {tx.nomorSPMU}
+                  </div>
+                </div>
+              )}
               <SpmuDoc tx={tx} />
             </div>
           )}

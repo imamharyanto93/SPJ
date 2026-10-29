@@ -12,7 +12,7 @@ export const DokumenPerencanaanDoc: React.FC<DokumenPerencanaanDocProps> = ({ tx
   const waktuSerahTerima = tx.waktuPenyelesaian || formatTanggalSlash(tx.tanggalBAST || tx.tanggalPesanan);
 
   return (
-    <div className="doc-font bg-white text-black text-[11px] leading-normal p-8 md:p-10 max-w-[210mm] mx-auto min-h-[297mm] shadow-md border border-slate-200 print:shadow-none print:border-none print:p-0">
+    <div className="doc-font bg-white text-black text-[11px] leading-normal p-8 md:p-10 max-w-[210mm] mx-auto min-h-[297mm] shadow-md border border-slate-200 print:shadow-none print:border-none print:p-0 print:min-h-0 print:h-auto print:max-w-none print:w-full print:m-0">
       {/* Judul Dokumen */}
       <div className="text-center my-6">
         <h1 className="text-[14px] font-bold tracking-wide uppercase text-black inline-block">

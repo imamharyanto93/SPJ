@@ -206,7 +206,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans">
       {/* Decorative Brand Topbar matching user swatch: 4 distinct color stripes */}
-      <div className="grid grid-cols-4 h-1.5 w-full">
+      <div className="no-print brand-stripe grid grid-cols-4 h-1.5 w-full">
         <div className="bg-[#085070]"></div>
         <div className="bg-[#4480A6]"></div>
         <div className="bg-[#92D2F9]"></div>
@@ -262,7 +262,7 @@ export default function App() {
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+      <main id="main-app-content" className="no-print app-dashboard-main flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
         {/* Banner / Overview Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
           <div className="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-2xs hover:border-[#92D2F9] transition-colors">

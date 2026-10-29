@@ -2,32 +2,21 @@ import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 
 /**
- * Unduh elemen HTML sebagai file PDF A4 berkualitas tinggi
+ * Unduh elemen dokumen HTML sebagai file PDF A4 berkualitas tinggi
+ * Mendukung ekspor multi-halaman untuk bundel 4 dokumen secara rapi
  */
 export async function downloadElementAsPdf(
   elementId: string,
   filename: string,
   onProgress?: (status: string) => void
 ): Promise<void> {
-  const element = document.getElementById(elementId);
-  if (!element) {
+  const container = document.getElementById(elementId);
+  if (!container) {
     throw new Error(`Element with id "${elementId}" not found`);
   }
 
-  onProgress?.('Menyiapkan dokumen...');
+  const pages = container.querySelectorAll<HTMLElement>('.print-page');
 
-  // Pastikan render dalam scale 2x agar teks dan logo tajam
-  const canvas = await html2canvas(element, {
-    scale: 2,
-    useCORS: true,
-    logging: false,
-    backgroundColor: '#ffffff',
-    windowWidth: element.scrollWidth,
-  });
-
-  onProgress?.('Mengonversi ke format PDF A4...');
-
-  const imgData = canvas.toDataURL('image/jpeg', 0.98);
   const pdf = new jsPDF({
     orientation: 'portrait',
     unit: 'mm',
@@ -37,25 +26,38 @@ export async function downloadElementAsPdf(
   const pdfWidth = pdf.internal.pageSize.getWidth();
   const pdfHeight = pdf.internal.pageSize.getHeight();
 
-  const canvasWidth = canvas.width;
-  const canvasHeight = canvas.height;
+  if (pages.length > 0) {
+    // Multi-page bundel export: setiap dokumen diproses ke halaman PDF tersendiri
+    for (let i = 0; i < pages.length; i++) {
+      const pageEl = pages[i];
+      onProgress?.(`Memproses dokumen ${i + 1} dari ${pages.length}...`);
 
-  // Rasio fit ke A4
-  const imgWidth = pdfWidth;
-  const imgHeight = (canvasHeight * pdfWidth) / canvasWidth;
+      const canvas = await html2canvas(pageEl, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+        windowWidth: pageEl.scrollWidth || 794,
+      });
 
-  // Jika tinggi melebihi 1 halaman, buat multiple pages
-  let heightLeft = imgHeight;
-  let position = 0;
-
-  pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-  heightLeft -= pdfHeight;
-
-  while (heightLeft > 2) {
-    position = heightLeft - imgHeight;
-    pdf.addPage();
-    pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-    heightLeft -= pdfHeight;
+      const imgData = canvas.toDataURL('image/jpeg', 0.98);
+      if (i > 0) {
+        pdf.addPage();
+      }
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+    }
+  } else {
+    // Single page fallback
+    onProgress?.('Mengonversi dokumen...');
+    const canvas = await html2canvas(container, {
+      scale: 2,
+      useCORS: true,
+      logging: false,
+      backgroundColor: '#ffffff',
+      windowWidth: container.scrollWidth,
+    });
+    const imgData = canvas.toDataURL('image/jpeg', 0.98);
+    pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
   }
 
   onProgress?.('Menyimpan file PDF...');
@@ -63,8 +65,16 @@ export async function downloadElementAsPdf(
 }
 
 /**
- * Cetak langsung melalui window.print()
+ * Cetak langsung melalui window.print() dengan isolasi halaman cetak resmi
  */
 export function printDocument(): void {
-  window.print();
+  document.body.classList.add('is-printing-document');
+
+  // Beri sedikit jeda agar DOM & CSS render stabil sebelum dialog cetak browser muncul
+  setTimeout(() => {
+    window.print();
+    setTimeout(() => {
+      document.body.classList.remove('is-printing-document');
+    }, 400);
+  }, 80);
 }

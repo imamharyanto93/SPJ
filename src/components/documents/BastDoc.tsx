@@ -15,7 +15,7 @@ export const BastDoc: React.FC<BastDocProps> = ({ tx }) => {
   const tanggalSpFormat = formatTanggalIndonesia(tx.tanggalPesanan);
 
   return (
-    <div className="doc-font bg-white text-black text-[10.5px] leading-relaxed p-6 md:p-8 max-w-[210mm] mx-auto min-h-[297mm] shadow-md border border-slate-200 print:shadow-none print:border-none print:p-0">
+    <div className="doc-font bg-white text-black text-[10.5px] leading-relaxed p-6 md:p-8 max-w-[210mm] mx-auto min-h-[297mm] shadow-md border border-slate-200 print:shadow-none print:border-none print:p-0 print:min-h-0 print:h-auto print:max-w-none print:w-full print:m-0">
       {/* Kop Surat */}
       <KopSurat school={tx.school} />
 
