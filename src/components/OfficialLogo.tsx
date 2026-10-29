@@ -1,22 +1,42 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface OfficialLogoProps {
   customLogoUrl?: string;
   className?: string;
 }
 
-export const OfficialLogo: React.FC<OfficialLogoProps> = ({ customLogoUrl, className = 'w-16 h-20' }) => {
-  if (customLogoUrl) {
+export const OfficialLogo: React.FC<OfficialLogoProps> = ({
+  customLogoUrl,
+  className = 'w-16 h-20',
+}) => {
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    setHasError(false);
+  }, [customLogoUrl]);
+
+  // If a valid custom logo is uploaded, render it with error handling
+  if (
+    customLogoUrl &&
+    typeof customLogoUrl === 'string' &&
+    customLogoUrl.trim() !== '' &&
+    customLogoUrl !== 'undefined' &&
+    customLogoUrl !== 'null' &&
+    !hasError
+  ) {
     return (
-      <img
-        src={customLogoUrl}
-        alt="Logo Sekolah / Pemda"
-        className={`object-contain ${className}`}
-      />
+      <div className={`relative flex items-center justify-center select-none ${className}`}>
+        <img
+          src={customLogoUrl}
+          alt="Logo Satuan Pendidikan / Pemda"
+          onError={() => setHasError(true)}
+          className="max-h-full max-w-full object-contain"
+        />
+      </div>
     );
   }
 
-  // Official Lambang Kabupaten Serang crisp SVG representation
+  // Official Lambang Kabupaten Serang crisp SVG representation (Default)
   return (
     <div className={`relative flex items-center justify-center select-none ${className}`}>
       <svg

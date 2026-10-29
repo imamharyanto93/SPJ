@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Coins,
   Copy,
@@ -15,6 +15,7 @@ import {
   ZoomIn,
   ZoomOut,
 } from 'lucide-react';
+import { storageService } from '../services/storage';
 import { DocumentType, TransactionDocument } from '../types/procurement';
 import { downloadElementAsPdf, printDocument } from '../utils/pdfExport';
 import { BastDoc } from './documents/BastDoc';
@@ -43,6 +44,19 @@ export const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({
   const [zoomLevel, setZoomLevel] = useState<number>(100);
   const [isExporting, setIsExporting] = useState<boolean>(false);
   const [exportMessage, setExportMessage] = useState<string>('');
+
+  // Merge latest school profile and uploaded logo so documents immediately display new logo
+  const effectiveTx: TransactionDocument = useMemo(() => {
+    const activeSchool = storageService.getSchoolProfile();
+    return {
+      ...tx,
+      school: {
+        ...tx.school,
+        ...activeSchool,
+        logoUrl: activeSchool.logoUrl !== undefined ? activeSchool.logoUrl : tx.school?.logoUrl,
+      },
+    };
+  }, [tx]);
 
   const docTabs: { id: DocumentType; label: string; icon: React.ReactNode; short: string }[] = [
     { id: 'sp', label: '1. Surat Pesanan (SP)', icon: <FileText className="w-4 h-4" />, short: 'Surat Pesanan' },
@@ -264,7 +278,7 @@ export const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({
                   </div>
                 </div>
               )}
-              <SuratPesananDoc tx={tx} />
+              <SuratPesananDoc tx={effectiveTx} />
             </div>
           )}
 
@@ -278,11 +292,11 @@ export const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({
                     <span>Halaman 2 dari 4: DOKUMEN PERENCANAAN</span>
                   </div>
                   <div className="text-[11px] font-medium text-[#FDE8B5] truncate max-w-[280px]">
-                    {tx.kategoriBarangJasa || tx.items[0]?.uraian || 'Rincian Pengadaan'}
+                    {effectiveTx.kategoriBarangJasa || effectiveTx.items[0]?.uraian || 'Rincian Pengadaan'}
                   </div>
                 </div>
               )}
-              <DokumenPerencanaanDoc tx={tx} />
+              <DokumenPerencanaanDoc tx={effectiveTx} />
             </div>
           )}
 
@@ -296,11 +310,11 @@ export const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({
                     <span>Halaman 3 dari 4: BERITA ACARA SERAH TERIMA (BAST)</span>
                   </div>
                   <div className="text-[11px] font-mono text-[#92D2F9]">
-                    No. {tx.nomorBAST}
+                    No. {effectiveTx.nomorBAST}
                   </div>
                 </div>
               )}
-              <BastDoc tx={tx} />
+              <BastDoc tx={effectiveTx} />
             </div>
           )}
 
@@ -314,11 +328,11 @@ export const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({
                     <span>Halaman 4 dari 4: SURAT PERINTAH MENGELUARKAN UANG (SPMU)</span>
                   </div>
                   <div className="text-[11px] font-mono text-[#FDE8B5]">
-                    No. {tx.nomorSPMU}
+                    No. {effectiveTx.nomorSPMU}
                   </div>
                 </div>
               )}
-              <SpmuDoc tx={tx} />
+              <SpmuDoc tx={effectiveTx} />
             </div>
           )}
         </div>

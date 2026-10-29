@@ -103,6 +103,26 @@ export const storageService = {
   saveSchoolProfile(profile: SchoolProfile): void {
     try {
       localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+      // Sync the updated profile & logo across all saved transactions so existing docs immediately reflect new logo
+      const data = localStorage.getItem(TX_KEY);
+      if (data) {
+        try {
+          const list: TransactionDocument[] = JSON.parse(data);
+          if (Array.isArray(list) && list.length > 0) {
+            const updated = list.map((tx) => ({
+              ...tx,
+              school: {
+                ...tx.school,
+                ...profile,
+                logoUrl: profile.logoUrl,
+              },
+            }));
+            localStorage.setItem(TX_KEY, JSON.stringify(updated));
+          }
+        } catch {
+          // ignore
+        }
+      }
     } catch (e) {
       console.error('Failed saving school profile', e);
     }

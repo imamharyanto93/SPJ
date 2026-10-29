@@ -14,12 +14,14 @@ import {
   RefreshCw,
   Search,
   Settings,
+  ShieldCheck,
   Sparkles,
   Trash2,
   Upload,
 } from 'lucide-react';
+import { AppLogo } from './components/AppLogo';
+import { BackupRestoreModal } from './components/BackupRestoreModal';
 import { DocumentViewerModal } from './components/DocumentViewerModal';
-import { OfficialLogo } from './components/OfficialLogo';
 import { SchoolSettingsModal } from './components/SchoolSettingsModal';
 import { SearchAndHistoryBar } from './components/SearchAndHistoryBar';
 import { TransactionCard } from './components/TransactionCard';
@@ -52,6 +54,7 @@ export default function App() {
   const [viewingTx, setViewingTx] = useState<TransactionDocument | null>(null);
 
   const [isSchoolSettingsOpen, setIsSchoolSettingsOpen] = useState<boolean>(false);
+  const [isBackupModalOpen, setIsBackupModalOpen] = useState<boolean>(false);
 
   // Delete confirm state
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; nomor: string } | null>(null);
@@ -218,8 +221,8 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between gap-4">
           {/* Logo & Brand Title */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-12 flex-shrink-0 flex items-center justify-center">
-              <OfficialLogo customLogoUrl={schoolProfile.logoUrl} className="w-9 h-11" />
+            <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center">
+              <AppLogo className="w-10 h-10" />
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -238,6 +241,15 @@ export default function App() {
 
           {/* Action buttons */}
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => setIsBackupModalOpen(true)}
+              className="flex items-center gap-1.5 px-3 py-2 border border-slate-200 hover:border-[#4480A6] hover:bg-[#EBF6FE] text-[#085070] text-xs font-semibold rounded-xl transition-all shadow-2xs"
+              title="Cadangkan & Pulihkan Data agar tidak hilang saat hapus histori browser"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-[#4480A6]" />
+              <span className="hidden sm:inline">Cadangkan Data</span>
+            </button>
+
             <button
               onClick={() => setIsSchoolSettingsOpen(true)}
               className="flex items-center gap-1.5 px-3 py-2 border border-slate-200 hover:border-[#4480A6] hover:bg-[#EBF6FE] text-[#085070] text-xs font-semibold rounded-xl transition-all shadow-2xs"
@@ -396,7 +408,14 @@ export default function App() {
 
         {/* Bottom Utility Bar: Backup, Import, Reset */}
         <div className="no-print pt-6 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-500">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 flex-wrap">
+            <button
+              onClick={() => setIsBackupModalOpen(true)}
+              className="flex items-center gap-1.5 font-bold text-[#085070] hover:text-[#4480A6] transition-colors bg-[#EBF6FE] px-2.5 py-1 rounded-lg border border-[#92D2F9]"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-[#4480A6]" />
+              <span>Pusat Cadangkan & Pengamanan Data</span>
+            </button>
             <button
               onClick={handleExportBackup}
               className="flex items-center gap-1.5 hover:text-slate-800 transition-colors"
@@ -511,6 +530,14 @@ export default function App() {
           setSchoolProfile(profile);
           reloadData();
         }}
+      />
+
+      <BackupRestoreModal
+        isOpen={isBackupModalOpen}
+        onClose={() => setIsBackupModalOpen(false)}
+        transactions={transactions}
+        schoolProfile={schoolProfile}
+        onDataRestored={reloadData}
       />
     </div>
   );

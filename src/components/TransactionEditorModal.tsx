@@ -25,9 +25,18 @@ interface TransactionEditorModalProps {
 }
 
 const createInitialFormData = (initialData?: TransactionDocument | null): TransactionDocument => {
-  if (initialData) return JSON.parse(JSON.stringify(initialData));
-
   const defaultSchool = storageService.getSchoolProfile();
+  if (initialData) {
+    const cloned: TransactionDocument = JSON.parse(JSON.stringify(initialData));
+    if (defaultSchool.logoUrl) {
+      cloned.school = {
+        ...cloned.school,
+        logoUrl: defaultSchool.logoUrl,
+      };
+    }
+    return cloned;
+  }
+
   const todayStr = new Date().toISOString().split('T')[0];
   const slashDate = `${todayStr.slice(8, 10)}/${todayStr.slice(5, 7)}/${todayStr.slice(0, 4)}`;
 
@@ -201,6 +210,11 @@ export const TransactionEditorModal: React.FC<TransactionEditorModalProps> = ({
     }
     if (!finalTx.keperluanSPMU) {
       finalTx.keperluanSPMU = `Pembayaran ${finalTx.paketPesanan || finalTx.items[0]?.uraian || 'Barang/Jasa'}`;
+    }
+
+    const currentSchool = storageService.getSchoolProfile();
+    if (currentSchool.logoUrl && !finalTx.school.logoUrl) {
+      finalTx.school.logoUrl = currentSchool.logoUrl;
     }
 
     onSave(finalTx);

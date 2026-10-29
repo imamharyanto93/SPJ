@@ -29,11 +29,54 @@ export const SchoolSettingsModal: React.FC<SchoolSettingsModalProps> = ({
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
     const reader = new FileReader();
-    reader.onload = () => {
-      setProfile((prev) => ({ ...prev, logoUrl: reader.result as string }));
+    reader.onload = (event) => {
+      const result = event.target?.result as string;
+      if (!result) return;
+
+      // Use an offscreen image to resize / normalize logo for crisp Kop Surat printing
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          const MAX_DIM = 400;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_DIM) {
+              height = Math.round((height * MAX_DIM) / width);
+              width = MAX_DIM;
+            }
+          } else {
+            if (height > MAX_DIM) {
+              width = Math.round((width * MAX_DIM) / height);
+              height = MAX_DIM;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            const optimizedDataUrl = canvas.toDataURL('image/png');
+            setProfile((prev) => ({ ...prev, logoUrl: optimizedDataUrl }));
+          } else {
+            setProfile((prev) => ({ ...prev, logoUrl: result }));
+          }
+        } catch {
+          setProfile((prev) => ({ ...prev, logoUrl: result }));
+        }
+      };
+      img.onerror = () => {
+        setProfile((prev) => ({ ...prev, logoUrl: result }));
+      };
+      img.src = result;
     };
     reader.readAsDataURL(file);
+    e.target.value = '';
   };
 
   const handleResetLogo = () => {
@@ -85,10 +128,10 @@ export const SchoolSettingsModal: React.FC<SchoolSettingsModalProps> = ({
               <p className="text-[11px] text-slate-500">
                 Gunakan logo bawaan resmi atau unggah logo kustom sekolah Anda (PNG/JPG).
               </p>
-              <div className="flex items-center gap-2 pt-1">
+              <div className="flex items-center gap-2 pt-1 flex-wrap">
                 <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold rounded-md shadow-2xs">
                   <Upload className="w-3.5 h-3.5" />
-                  <span>Unggah Logo</span>
+                  <span>Unggah Logo Baru</span>
                   <input
                     type="file"
                     accept="image/*"
@@ -96,17 +139,29 @@ export const SchoolSettingsModal: React.FC<SchoolSettingsModalProps> = ({
                     className="hidden"
                   />
                 </label>
-                {profile.logoUrl && (
-                  <button
-                    type="button"
-                    onClick={handleResetLogo}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-md"
-                  >
-                    <RefreshCw className="w-3.5 h-3.5" />
-                    Reset ke Logo Pemkab
-                  </button>
+                {profile.logoUrl ? (
+                  <>
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10.5px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                      ✓ Logo Khusus Terpasang
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleResetLogo}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5" />
+                      Kembalikan ke Logo Pemda
+                    </button>
+                  </>
+                ) : (
+                  <span className="text-[10.5px] text-slate-500 italic">
+                    Menggunakan Lambang Resmi Bawaan
+                  </span>
                 )}
               </div>
+              <p className="text-[10px] text-[#085070] font-medium pt-0.5">
+                * Logo ini otomatis langsung diterapkan ke seluruh Kop Surat (Surat Pesanan, BAST, dan SPMU).
+              </p>
             </div>
           </div>
 

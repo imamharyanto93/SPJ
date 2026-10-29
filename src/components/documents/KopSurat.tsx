@@ -1,4 +1,5 @@
 import React from 'react';
+import { storageService } from '../../services/storage';
 import { SchoolProfile } from '../../types/procurement';
 import { OfficialLogo } from '../OfficialLogo';
 
@@ -8,12 +9,15 @@ interface KopSuratProps {
 }
 
 export const KopSurat: React.FC<KopSuratProps> = ({ school }) => {
+  // Use school's logoUrl, or fallback to the current school profile logo in storage
+  const activeLogo = school?.logoUrl || storageService.getSchoolProfile()?.logoUrl;
+
   return (
     <div className="w-full mb-4 select-text">
       <div className="flex items-center justify-between gap-4 pb-2">
         {/* Logo kiri */}
         <div className="w-20 flex-shrink-0 flex items-center justify-center">
-          <OfficialLogo customLogoUrl={school.logoUrl} className="w-18 h-22" />
+          <OfficialLogo customLogoUrl={activeLogo} className="w-18 h-22" />
         </div>
 
         {/* Teks Kop Surat Resmi Dinas / Sekolah */}
